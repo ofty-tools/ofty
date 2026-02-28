@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glaucoma Clinical Decision Tools — OFTY</title>
+  <meta name="description" content="Evidence-informed clinical decision support tools for glaucoma management. IOP contextualisation, target IOP setting, and more. Created by Andrea Ragosta, MD, FEBO." />
+  <meta property="og:title" content="Glaucoma Clinical Decision Tools — OFTY" />
+  <meta property="og:description" content="Evidence-informed workflow tools for glaucoma risk assessment and target IOP setting." />
+  <meta property="og:type" content="website" />
+
+  <link rel="alternate" hreflang="en" href="/glaucoma/" />
+  <link rel="alternate" hreflang="es" href="/es/glaucoma/" />
+  <link rel="alternate" hreflang="x-default" href="/glaucoma/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────────── */
+    :root {
+      --c-bg:        #f7f6f3;
+      --c-surface:   #ffffff;
+      --c-border:    #e4e1da;
+      --c-text:      #1a1917;
+      --c-muted:     #6b6760;
+      --c-accent:    #1d5c8c;
+      --c-accent-lt: #e8f0f8;
+      --c-live:      #1a7a4a;
+      --c-live-bg:   #e8f5ee;
+      --c-soon-bg:   #f0ede8;
+      --c-soon:      #7a6e61;
+      --radius:      10px;
+      --radius-lg:   16px;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+      --font-display:"DM Serif Display", Georgia, serif;
+      --font-body:   "DM Sans", system-ui, sans-serif;
+      --max-w:       1100px;
+      --nav-h:       60px;
+    }
+
+    /* ─── RESET ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display: block; }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 20px;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────────────────── */
+    #header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: rgba(247,246,243,.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+    }
+    #header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .wordmark {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: -.01em;
+      color: var(--c-text);
+      flex-shrink: 0;
+    }
+    .wordmark span { color: var(--c-accent); }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    nav a {
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .01em;
+      padding: 5px 11px;
+      border-radius: 6px;
+      color: var(--c-muted);
+      transition: color .18s, background .18s;
+    }
+    nav a:hover { color: var(--c-text); background: rgba(0,0,0,.05); }
+    nav a.active { color: var(--c-accent); background: var(--c-accent-lt); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .badge-beta {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      background: var(--c-accent-lt);
+      border: 1px solid #c1d8ee;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      border: 1px solid var(--c-border);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .lang-switch a {
+      font-size: .75rem;
+      font-weight: 500;
+      padding: 4px 9px;
+      color: var(--c-muted);
+      transition: background .15s, color .15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .lang-switch a:hover { background: rgba(0,0,0,.05); color: var(--c-text); }
+    .lang-switch a.lang-active {
+      background: var(--c-accent-lt);
+      color: var(--c-accent);
+    }
+    .nav-mobile-hide { display: none; }
+    @media (min-width: 620px) {
+      nav { display: flex; }
+      .nav-mobile-hide { display: flex; }
+    }
+
+    /* ─── HERO ────────────────────────────────────────────────────── */
+    #hero {
+      padding: 80px 0 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 80% 30%, #d6e8f5 0%, transparent 65%);
+      opacity: .45;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-bottom: 22px;
+      opacity: 0;
+      animation: fadeUp .5s .1s ease forwards;
+    }
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px;
+      background: var(--c-accent);
+      border-radius: 50%;
+    }
+    .hero-breadcrumb {
+      font-size: .78rem;
+      color: var(--c-muted);
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp .45s .05s ease forwards;
+    }
+    .hero-breadcrumb a { color: var(--c-accent); }
+    .hero-breadcrumb a:hover { text-decoration: underline; }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.17;
+      letter-spacing: -.02em;
+      max-width: 680px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp .55s .2s ease forwards;
+    }
+    h1 em { font-style: italic; color: var(--c-accent); }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--c-muted);
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp .55s .3s ease forwards;
+    }
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp .55s .4s ease forwards;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: .88rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-primary {
+      background: var(--c-accent);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(29,92,140,.28);
+    }
+    .btn-primary:hover { background: #174f7a; box-shadow: 0 4px 18px rgba(29,92,140,.35); transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--c-surface);
+      color: var(--c-text);
+      border: 1px solid var(--c-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-secondary:hover { background: var(--c-bg); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn:disabled, .btn[disabled] {
+      opacity: .45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ─── SECTION COMMON ──────────────────────────────────────────── */
+    section { padding: 72px 0; }
+    .section-label {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-muted);
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      letter-spacing: -.02em;
+      line-height: 1.25;
+      margin-bottom: 40px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--c-border);
+      margin: 0;
+    }
+
+    /* ─── TOOLS GRID ──────────────────────────────────────────────── */
+    #tools { background: var(--c-surface); }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 640px) { .tools-grid { grid-template-columns: repeat(2,1fr); } }
+    .tool-card {
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .tool-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .tool-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .tool-card-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .badge-live { background: var(--c-live-bg); color: var(--c-live); }
+    .badge-soon { background: var(--c-soon-bg); color: var(--c-soon); }
+    .badge-version { background: var(--c-border); color: var(--c-muted); font-size: .65rem; }
+    .tool-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: -.01em;
+      line-height: 1.3;
+    }
+    .tool-card p { font-size: .86rem; color: var(--c-muted); line-height: 1.6; flex: 1; }
+    .btn-tool {
+      align-self: flex-start;
+      padding: 9px 18px;
+      font-size: .83rem;
+    }
+
+    /* ─── PHILOSOPHY ──────────────────────────────────────────────── */
+    #philosophy { background: var(--c-bg); }
+    .philosophy-inner { max-width: 720px; }
+    .philosophy-inner p {
+      font-size: .97rem;
+      color: var(--c-muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .philosophy-inner p:last-child { margin-bottom: 0; }
+
+    /* pill-list callouts */
+    .philosophy-pillars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0;
+    }
+    .pillar {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--c-accent);
+      background: var(--c-accent-lt);
+      border: 1px solid #c1d8ee;
+      padding: 6px 13px;
+      border-radius: 20px;
+    }
+    .pillar svg { width: 13px; height: 13px; stroke: var(--c-accent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ─── DISCLAIMER ──────────────────────────────────────────────── */
+    #disclaimer { background: #faf9f6; padding: 48px 0; }
+    .disclaimer-box {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-left: 3px solid var(--c-accent);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      max-width: 780px;
+    }
+    .disclaimer-short {
+      font-size: .85rem;
+      color: var(--c-muted);
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+    .disclaimer-toggle {
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--c-accent);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity .15s;
+    }
+    .disclaimer-toggle:hover { opacity: .75; }
+    .disclaimer-more {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .35s ease;
+    }
+    .disclaimer-more.open { max-height: 420px; }
+    .disclaimer-more ul {
+      margin-top: 14px;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .disclaimer-more li {
+      font-size: .83rem;
+      color: var(--c-muted);
+      line-height: 1.6;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--c-border);
+      padding: 28px 0;
+      background: var(--c-bg);
+    }
+    footer .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy { font-size: .8rem; color: var(--c-muted); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { font-size: .8rem; color: var(--c-muted); transition: color .15s; }
+    .footer-links a:hover { color: var(--c-text); }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJJZYJB06"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWJJZYJB06');
+</script>
+</head>
+<body>
+
+  <!-- ── HEADER ───────────────────────────────────────────────────── -->
+  <header id="header" role="banner">
+    <div class="container">
+      <a href="/" class="wordmark">OF<span>TY</span></a>
+
+      <nav aria-label="Primary navigation" class="nav-mobile-hide">
+        <a href="/">Home</a>
+        <a href="/glaucoma/" class="active">Glaucoma</a>
+        <a href="#tools">Tools</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <div class="header-right">
+        <div class="lang-switch" role="navigation" aria-label="Language selection">
+          <a href="/glaucoma/" class="lang-active" aria-current="true" aria-label="English version">🇬🇧 EN</a>
+          <a href="/es/glaucoma/" aria-label="Versión en español">🇪🇸 ES</a>
+        </div>
+        <span class="badge-beta" aria-label="Beta version">Beta</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── HERO ─────────────────────────────────────────────────────── -->
+    <section id="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <p class="hero-breadcrumb">
+          <a href="/">OFTY</a> &rsaquo; Glaucoma
+        </p>
+        <p class="hero-eyebrow">
+          <span class="hero-eyebrow-dot" aria-hidden="true"></span>
+          Clinical Decision Support · Glaucoma
+        </p>
+
+        <h1 id="hero-heading">
+          Glaucoma <em>Clinical</em><br />Decision Tools
+        </h1>
+
+        <p class="hero-sub">
+          Evidence-informed workflow tools for pressure contextualisation,
+          risk assessment, and target IOP setting — designed for the
+          consulting room, not the classroom.
+        </p>
+
+        <div class="hero-cta">
+          <a href="/glaucoma/iop-cct/" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Open IOP + CCT Contextualizer
+          </a>
+          <a href="#tools" class="btn btn-secondary">
+            View all tools
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── TOOLS ─────────────────────────────────────────────────────── -->
+    <section id="tools" aria-labelledby="tools-heading">
+      <div class="container">
+        <p class="section-label reveal">Available tools</p>
+        <h2 id="tools-heading" class="reveal">Glaucoma tool suite</h2>
+
+        <div class="tools-grid">
+
+          <!-- Tool #1 -->
+          <article class="tool-card reveal">
+            <div class="tool-card-top">
+              <div class="tool-card-badges">
+                <span class="badge badge-live">Live</span>
+                <span class="badge badge-version">v0.1</span>
+              </div>
+            </div>
+            <h3>IOP + CCT Contextualizer</h3>
+            <p>
+              Puts your measured IOP in clinical context alongside central corneal thickness —
+              interpreting CCT as a risk and reliability modifier, not a numeric correction.
+              Aligned with current evidence and major guideline recommendations.
+            </p>
+            <a href="/glaucoma/iop-cct/" class="btn btn-primary btn-tool">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Open Tool
+            </a>
+          </article>
+
+          <!-- Tool #2 -->
+          <article class="tool-card reveal">
+            <div class="tool-card-top">
+              <div class="tool-card-badges">
+                <span class="badge badge-soon">Coming Soon</span>
+                <span class="badge badge-version">v0.1 beta</span>
+              </div>
+            </div>
+            <h3>Target IOP Calculator</h3>
+            <p>
+              Estimates a personalised IOP target range based on baseline pressure,
+              glaucoma stage, and relevant clinical risk modifiers — a structured starting
+              point for management decisions.
+            </p>
+            <button class="btn btn-secondary btn-tool" disabled aria-disabled="true">Coming soon</button>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── CLINICAL PHILOSOPHY ───────────────────────────────────────── -->
+    <section id="philosophy" aria-labelledby="philosophy-heading">
+      <div class="container">
+        <p class="section-label reveal">Clinical approach</p>
+        <div class="philosophy-inner">
+          <h2 id="philosophy-heading" class="reveal">How these tools think</h2>
+
+          <div class="philosophy-pillars reveal" role="list" aria-label="Core principles">
+            <span class="pillar" role="listitem">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Stage-based thinking
+            </span>
+            <span class="pillar" role="listitem">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Risk modifier awareness
+            </span>
+            <span class="pillar" role="listitem">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              Always individualised
+            </span>
+            <span class="pillar" role="listitem">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Progression-aware
+            </span>
+          </div>
+
+          <p class="reveal">
+            Glaucoma management is fundamentally about weighing risk against burden of treatment
+            for each individual patient. These tools are built around that principle — they do not
+            produce a single answer, but a structured, evidence-referenced starting point for
+            clinical reasoning.
+          </p>
+          <p class="reveal">
+            IOP remains the primary modifiable risk factor, but it cannot be read in isolation.
+            Corneal thickness, optic nerve appearance, visual field trajectory, age, and systemic
+            factors all shape what a given pressure means for a given patient. The tools here
+            are designed to surface those contextual layers quickly and transparently.
+          </p>
+          <p class="reveal">
+            Importantly, CCT is treated here as a risk and measurement-reliability modifier — not
+            as a basis for a numeric IOP "correction." This aligns with the current consensus from
+            EGS and other major guideline bodies, and with the evidence that no validated correction
+            formula exists for clinical use.
+          </p>
+          <p class="reveal">
+            All outputs must be reassessed in light of disease progression, new clinical findings,
+            and the complete picture of the individual patient. These tools assist judgment — they
+            do not replace it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── DISCLAIMER ────────────────────────────────────────────────── -->
+    <section id="disclaimer" aria-labelledby="disclaimer-heading">
+      <div class="container">
+        <div class="disclaimer-box reveal">
+          <h2 id="disclaimer-heading" style="font-family:var(--font-body);font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-muted);margin-bottom:10px;">Disclaimer</h2>
+          <p class="disclaimer-short">
+            OFTY tools provide decision support only and do not constitute medical advice.
+            All clinical decisions must be individualised by a qualified clinician.
+          </p>
+          <button class="disclaimer-toggle" id="disclaimer-btn" aria-expanded="false" aria-controls="disclaimer-expanded">
+            Read more
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" id="disclaimer-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="disclaimer-more" id="disclaimer-expanded" role="region" aria-labelledby="disclaimer-btn">
+            <ul>
+              <li>These tools are for decision support only. They do not replace clinical examination, professional judgment, or individualised patient assessment.</li>
+              <li>All outputs must be interpreted in the full clinical context of each patient.</li>
+              <li>CCT values are used as a contextual risk factor — they do not imply a numeric IOP correction, in line with current evidence and major guideline recommendations (EGS, AAO).</li>
+              <li>Clinical situations evolve. Always reassess in light of disease progression, new findings, and the overall clinical picture.</li>
+              <li>OFTY does not store patient data and is not a certified medical device.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <div class="container">
+      <p class="footer-copy">Andrea Ragosta, MD, FEBO · OFTY</p>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/">Home</a>
+        <a href="/glaucoma/">Glaucoma</a>
+        <a href="#tools">Tools</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // ── DISCLAIMER TOGGLE ───────────────────────────────────────────────
+    const disclaimerBtn = document.getElementById("disclaimer-btn");
+    const disclaimerMore = document.getElementById("disclaimer-expanded");
+    const chevron = document.getElementById("disclaimer-chevron");
+
+    disclaimerBtn.addEventListener("click", function () {
+      const isOpen = disclaimerMore.classList.toggle("open");
+      disclaimerBtn.setAttribute("aria-expanded", isOpen);
+      disclaimerBtn.textContent = isOpen ? "Read less " : "Read more ";
+      disclaimerBtn.appendChild(chevron);
+      chevron.style.transform = isOpen ? "rotate(180deg)" : "rotate(0deg)";
+      chevron.style.transition = "transform .25s";
+    });
+
+    // ── SCROLL REVEAL ───────────────────────────────────────────────────
+    const revealEls = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const siblings = entry.target.closest(".tools-grid");
+            const delay = siblings
+              ? Array.from(siblings.children).indexOf(entry.target) * 80
+              : 0;
+            setTimeout(() => entry.target.classList.add("visible"), delay);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    revealEls.forEach(el => io.observe(el));
+  </script>
+
+</body>
+</html>
