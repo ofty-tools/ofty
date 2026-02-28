@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>Andrea Ragosta, MD, FEBO — Oftalmólogo | OFTY</title>
+  <meta name="description" content="Andrea Ragosta, MD, FEBO. Oftalmólogo especializado en glaucoma y segmento anterior. Fundador de las herramientas de apoyo a la decisión clínica OFTY." />
+  <link rel="canonical" href="https://ofty.vercel.app/es/about/andrea-ragosta/" />
+
+  <meta property="og:title" content="Andrea Ragosta, MD, FEBO — Oftalmólogo | OFTY" />
+  <meta property="og:description" content="Andrea Ragosta, MD, FEBO. Oftalmólogo especializado en glaucoma y segmento anterior. Fundador de las herramientas de apoyo a la decisión clínica OFTY." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ofty.vercel.app/es/about/andrea-ragosta/" />
+
+  <link rel="alternate" hreflang="en" href="/about/" />
+  <link rel="alternate" hreflang="es" href="/es/about/andrea-ragosta/" />
+  <link rel="alternate" hreflang="x-default" href="/about/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Andrea Ragosta",
+    "jobTitle": "Oftalmólogo",
+    "medicalSpecialty": "Glaucoma",
+    "url": "https://ofty.vercel.app/es/about/andrea-ragosta/",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "OFTY",
+      "url": "https://ofty.vercel.app/"
+    },
+    "knowsAbout": ["Glaucoma", "Anterior segment", "Cataract surgery", "Clinical decision support"]
+  }
+  </script>
+
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────────── */
+    :root {
+      color-scheme: light;
+      --c-bg:        #f7f6f3;
+      --c-surface:   #ffffff;
+      --c-border:    #e4e1da;
+      --c-text:      #1a1917;
+      --c-muted:     #6b6760;
+      --c-accent:    #1d5c8c;
+      --c-accent-lt: #e8f0f8;
+      --radius:      10px;
+      --radius-lg:   16px;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+      --font-display: "DM Serif Display", Georgia, serif;
+      --font-body:    "DM Sans", system-ui, sans-serif;
+      --max-w:        1100px;
+      --nav-h:        60px;
+    }
+
+    /* ─── RESET ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--c-bg) !important;
+      color: var(--c-text) !important;
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 20px;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────────────────── */
+    #header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: rgba(247,246,243,.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+    }
+    #header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .wordmark {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: -.01em;
+      color: var(--c-text);
+      flex-shrink: 0;
+    }
+    .wordmark span { color: var(--c-accent); }
+
+    .main-nav {
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    @media (min-width: 620px) { .main-nav { display: flex; } }
+    .main-nav a {
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .01em;
+      padding: 5px 11px;
+      border-radius: 6px;
+      color: var(--c-muted);
+      transition: color .18s, background .18s;
+    }
+    .main-nav a:hover { color: var(--c-text); background: rgba(0,0,0,.05); }
+    .main-nav a.active { color: var(--c-accent); background: var(--c-accent-lt); }
+
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--c-border);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .lang-switch a {
+      font-size: .75rem;
+      font-weight: 500;
+      padding: 4px 9px;
+      color: var(--c-muted);
+      transition: background .15s, color .15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .lang-switch a:hover { background: rgba(0,0,0,.05); color: var(--c-text); }
+    .lang-switch a.lang-active { background: var(--c-accent-lt); color: var(--c-accent); }
+    .badge-beta {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      background: var(--c-accent-lt);
+      border: 1px solid #c1d8ee;
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ─── HERO ────────────────────────────────────────────────────── */
+    #hero {
+      padding: 72px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 90% 20%, #d6e8f5 0%, transparent 65%);
+      opacity: .4;
+      pointer-events: none;
+    }
+    .hero-breadcrumb {
+      font-size: .78rem;
+      color: var(--c-muted);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .4s .05s ease forwards;
+    }
+    .hero-breadcrumb a { color: var(--c-accent); }
+    .hero-breadcrumb a:hover { text-decoration: underline; }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+    @media (min-width: 760px) {
+      .hero-inner { grid-template-columns: auto 1fr; gap: 56px; align-items: center; }
+    }
+
+    /* avatar photo */
+    .author-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 2px solid #c1d8ee;
+      flex-shrink: 0;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp .5s .1s ease forwards;
+    }
+    .author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .hero-text {
+      opacity: 0;
+      animation: fadeUp .55s .2s ease forwards;
+    }
+    .author-credential {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-bottom: 14px;
+    }
+    .credential-dot {
+      width: 5px; height: 5px;
+      background: var(--c-accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 0 8px;
+    }
+    .author-credentials {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: 400;
+      letter-spacing: -.01em;
+      color: var(--c-text);
+      line-height: 1.25;
+      padding-bottom: 0.22em;
+    }
+    .hero-subtitle {
+      font-size: 1rem;
+      color: var(--c-muted);
+      font-weight: 400;
+    }
+
+    /* ─── DIVIDER ─────────────────────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--c-border); }
+
+    /* ─── CONTENT SECTIONS ────────────────────────────────────────── */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    @media (min-width: 900px) {
+      .content-grid {
+        grid-template-columns: 2fr 1fr;
+        gap: 0;
+      }
+    }
+
+    .content-main {
+      padding: 64px 0;
+      padding-right: 0;
+    }
+    @media (min-width: 900px) {
+      .content-main { padding-right: 64px; border-right: 1px solid var(--c-border); }
+    }
+
+    .content-aside {
+      padding: 64px 0;
+    }
+    @media (min-width: 900px) {
+      .content-aside { padding-left: 56px; }
+    }
+
+    .section-label {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-muted);
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      letter-spacing: -.015em;
+      line-height: 1.3;
+      margin-bottom: 20px;
+    }
+
+    /* bio */
+    .bio p {
+      font-size: .97rem;
+      color: var(--c-muted);
+      line-height: 1.78;
+      margin-bottom: 16px;
+    }
+    .bio p:last-child { margin-bottom: 0; }
+
+    /* clinical focus list */
+    .focus-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .focus-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .9rem;
+      color: var(--c-text);
+    }
+    .focus-list li::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--c-accent);
+      flex-shrink: 0;
+    }
+
+    /* credential pills */
+    .credential-block {
+      margin-bottom: 40px;
+    }
+    .credential-block .section-label { margin-bottom: 14px; }
+    .credential-pills {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .credential-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: .84rem;
+      color: var(--c-muted);
+      padding: 10px 14px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius);
+    }
+    .credential-pill-abbr {
+      font-weight: 600;
+      color: var(--c-accent);
+      font-size: .78rem;
+      letter-spacing: .03em;
+      flex-shrink: 0;
+      min-width: 52px;
+    }
+
+    /* about OFTY box */
+    .ofty-box {
+      background: var(--c-accent-lt);
+      border: 1px solid #c1d8ee;
+      border-radius: var(--radius-lg);
+      padding: 24px 22px;
+      margin-bottom: 40px;
+    }
+    .ofty-box .section-label { color: var(--c-accent); margin-bottom: 10px; }
+    .ofty-box p {
+      font-size: .87rem;
+      color: #2a4a6b;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .ofty-box p:last-of-type { margin-bottom: 0; }
+    .ofty-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--c-accent);
+      margin-top: 14px;
+      transition: opacity .15s;
+    }
+    .ofty-link:hover { opacity: .75; }
+    .ofty-link svg { width: 12px; height: 12px; stroke: var(--c-accent); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--c-border);
+      padding: 28px 0;
+      background: var(--c-bg);
+    }
+    footer .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy { font-size: .8rem; color: var(--c-muted); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { font-size: .8rem; color: var(--c-muted); transition: color .15s; }
+    .footer-links a:hover { color: var(--c-text); }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ───────────────────────────────────────────────────── -->
+  <header id="header" role="banner">
+    <div class="container">
+      <a href="/es/" class="wordmark" aria-label="OFTY inicio">OF<span>TY</span></a>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a href="/es/">Inicio</a>
+        <a href="/es/glaucoma/">Glaucoma</a>
+        <a href="/es/#tools">Herramientas</a>
+        <a href="/es/about/andrea-ragosta/" class="active" aria-current="page">Acerca de</a>
+      </nav>
+
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="Selección de idioma">
+          <a href="/about/" aria-label="English">🇬🇧 EN</a>
+          <a href="/es/about/andrea-ragosta/" class="lang-active" aria-current="true" aria-label="Español">🇪🇸 ES</a>
+        </nav>
+        <span class="badge-beta">Beta</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── HERO ─────────────────────────────────────────────────────── -->
+    <section id="hero" aria-labelledby="author-heading">
+      <div class="container">
+
+        <p class="hero-breadcrumb">
+          <a href="/es/">OFTY</a> &rsaquo; Acerca de
+        </p>
+
+        <div class="hero-inner">
+          <div class="author-avatar">
+            <img src="/assets/images/andrea-ragosta-ophthalmologist.jpg" alt="Andrea Ragosta, MD, FEBO — Oftalmólogo" />
+          </div>
+
+          <div class="hero-text">
+            <h1 id="author-heading">Andrea Ragosta <span class="author-credentials">MD, FEBO</span></h1>
+            <p class="hero-subtitle">Oftalmólogo, Glaucoma y Segmento Anterior</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── MAIN CONTENT ──────────────────────────────────────────────── -->
+    <section aria-label="Perfil del autor">
+      <div class="container">
+        <div class="content-grid">
+
+          <!-- ── LEFT: BIO ──────────────────────────────────────────── -->
+          <div class="content-main">
+
+            <div class="bio reveal">
+              <p class="section-label">Biografía</p>
+              <p>
+                Andrea Ragosta es oftalmólogo y cirujano especializado en glaucoma y enfermedades
+                del segmento anterior. Es Fellow del European Board of Ophthalmology (FEBO),
+                certificación europea de competencia clínica en oftalmología.
+              </p>
+              <p>
+                Ha desarrollado su experiencia clínica y quirúrgica en centros hospitalarios y
+                consulta privada, incluyendo instituciones vinculadas a la universidad. Su actividad
+                abarca el manejo integral del glaucoma — desde el diagnóstico y la estratificación
+                del riesgo hasta el tratamiento médico y quirúrgico — así como la cirugía del
+                segmento anterior, incluyendo la extracción de catarata.
+              </p>
+              <p>
+                Es el fundador de OFTY, una iniciativa de apoyo a la decisión clínica que desarrolla
+                herramientas estructuradas y basadas en la evidencia para los flujos de trabajo en
+                oftalmología.
+              </p>
+            </div>
+
+            <hr class="divider" style="margin: 40px 0;" />
+
+            <div class="reveal">
+              <p class="section-label">Áreas de actividad clínica</p>
+              <ul class="focus-list" role="list">
+                <li>Diagnóstico y manejo del glaucoma</li>
+                <li>Técnicas quirúrgicas en glaucoma</li>
+                <li>Cirugía de catarata</li>
+                <li>Optimización del flujo de trabajo clínico</li>
+              </ul>
+            </div>
+
+            <hr class="divider" style="margin: 40px 0;" />
+
+            <div class="reveal">
+              <p class="section-label">Acerca de OFTY</p>
+              <p style="font-size:.97rem; color:var(--c-muted); line-height:1.78; margin-bottom:16px;">
+                OFTY es una iniciativa de apoyo a la decisión clínica diseñada para proporcionar
+                puntos de partida estructurados y basados en la evidencia para los flujos de trabajo
+                en oftalmología. Las herramientas se desarrollan con referencia a las recomendaciones
+                vigentes de las principales guías clínicas — incluidas las de la Sociedad Europea
+                de Glaucoma (EGS) y la Academia Americana de Oftalmología (AAO) — y están destinadas
+                al uso por parte de clínicos cualificados como complemento, no como sustituto,
+                del juicio clínico.
+              </p>
+              <p style="font-size:.97rem; color:var(--c-muted); line-height:1.78;">
+                La iniciativa se centra actualmente en el manejo del glaucoma y está diseñada para
+                expandirse progresivamente a otras subespecialidades oftalmológicas.
+              </p>
+              <a href="/es/glaucoma/" class="ofty-link" style="margin-top:18px;">
+                Explorar herramientas de glaucoma
+                <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+
+            <hr class="divider" style="margin: 40px 0;" />
+
+            <div class="reveal">
+              <p class="section-label">Alcance y limitaciones</p>
+              <ul class="focus-list" role="list" style="margin-top:4px;">
+                <li>Las herramientas ofrecen apoyo a la decisión clínica — no constituyen consejo médico</li>
+                <li>Destinadas al uso exclusivo de profesionales sanitarios cualificados</li>
+                <li>No se recogen ni almacenan datos de pacientes</li>
+                <li>Las herramientas OFTY no son dispositivos médicos certificados</li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- ── RIGHT: ASIDE ───────────────────────────────────────── -->
+          <aside class="content-aside" aria-label="Titulaciones y cualificaciones">
+
+            <div class="credential-block reveal">
+              <p class="section-label">Titulaciones</p>
+              <div class="credential-pills">
+                <div class="credential-pill">
+                  <span class="credential-pill-abbr">MD</span>
+                  <span>Licenciado en Medicina y Cirugía</span>
+                </div>
+                <div class="credential-pill">
+                  <span class="credential-pill-abbr">Esp.</span>
+                  <span>Especialista en Oftalmología</span>
+                </div>
+                <div class="credential-pill">
+                  <span class="credential-pill-abbr">FEBO</span>
+                  <span>Fellow of the European Board of Ophthalmology</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ofty-box reveal">
+              <p class="section-label">OFTY</p>
+              <p>Herramientas de apoyo a la decisión clínica en oftalmología — basadas en la evidencia, orientadas al flujo de trabajo clínico y desarrolladas por un especialista.</p>
+              <a href="/es/" class="ofty-link">
+                Visitar OFTY
+                <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+
+            <div class="reveal" style="padding: 20px 0; border-top: 1px solid var(--c-border);">
+              <p class="section-label" style="margin-bottom:10px;">Aviso legal</p>
+              <p style="font-size:.8rem; color:var(--c-muted); line-height:1.65;">
+                El contenido de este sitio tiene fines informativos y de apoyo a la decisión clínica
+                exclusivamente. No constituye consejo médico. Las decisiones clínicas deben ser
+                individualizadas por un profesional sanitario cualificado.
+              </p>
+            </div>
+
+          </aside>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <div class="container">
+      <p class="footer-copy">Andrea Ragosta, MD, FEBO · OFTY</p>
+      <nav class="footer-links" aria-label="Navegación de pie de página">
+        <a href="/es/">Inicio</a>
+        <a href="/es/glaucoma/">Glaucoma</a>
+        <a href="/es/#tools">Herramientas</a>
+        <a href="/es/about/andrea-ragosta/">Acerca de</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    /* ── SCROLL REVEAL ──────────────────────────────────────────── */
+    (function () {
+      var els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('visible'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          setTimeout(function () {
+            entry.target.classList.add('visible');
+          }, 0);
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.1 });
+      els.forEach(function (el) { io.observe(el); });
+    }());
+  </script>
+
+</body>
+</html>
