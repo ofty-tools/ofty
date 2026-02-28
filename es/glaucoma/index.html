@@ -9,10 +9,9 @@
   <meta property="og:description" content="Herramientas basadas en evidencia para la valoración del riesgo en glaucoma y el establecimiento del objetivo de PIO." />
   <meta property="og:type" content="website" />
 
-  <link rel="alternate" hreflang="en" href="https://ofty-tools.netlify.app/glaucoma/" />
-  <link rel="alternate" hreflang="es" href="https://ofty-tools.netlify.app/es/glaucoma/" />
-  <link rel="alternate" hreflang="x-default" href="https://ofty-tools.netlify.app/es/glaucoma/" />
-  <link rel="canonical" href="https://ofty-tools.netlify.app/es/glaucoma/" />
+  <link rel="alternate" hreflang="en" href="/glaucoma/" />
+  <link rel="alternate" hreflang="es" href="/es/glaucoma/" />
+  <link rel="alternate" hreflang="x-default" href="/glaucoma/" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -485,10 +484,10 @@
         </p>
 
         <div class="hero-cta">
-          <button id="btn-tool1-hero" class="btn btn-primary">
+          <a href="/glaucoma/iop-cct/" class="btn btn-primary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Abrir Contextualizador PIO + PCCe
-          </button>
+          </a>
           <a href="#tools" class="btn btn-secondary">
             Ver todas las herramientas
           </a>
@@ -519,10 +518,10 @@
               Sitúa la PIO medida en contexto clínico junto con la paquimetría corneal central,
               interpretando la PCCe como modificador de riesgo y de fiabilidad — no como corrección numérica.
             </p>
-            <button id="btn-tool1-card" class="btn btn-primary btn-tool">
+            <a href="/glaucoma/iop-cct/" class="btn btn-primary btn-tool">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Abrir herramienta
-            </button>
+            </a>
           </article>
 
           <!-- Tool #2 -->
@@ -646,21 +645,6 @@
   </footer>
 
   <script>
-    // ── CONFIG ──────────────────────────────────────────────────────────
-    const TOOL1_URL = "https://ofty-iop-cct.netlify.app/";
-
-    // ── WIRE TOOL #1 BUTTONS ────────────────────────────────────────────
-    function openTool1() {
-      if (TOOL1_URL && TOOL1_URL !== "PASTE_TOOL1_URL_HERE") {
-        window.open(TOOL1_URL, "_blank", "noopener,noreferrer");
-      } else {
-        alert("La URL de la herramienta aún no está configurada. Define TOOL1_URL en el script.");
-      }
-    }
-
-    document.getElementById("btn-tool1-hero").addEventListener("click", openTool1);
-    document.getElementById("btn-tool1-card").addEventListener("click", openTool1);
-
     // ── DISCLAIMER TOGGLE ───────────────────────────────────────────────
     const disclaimerBtn = document.getElementById("disclaimer-btn");
     const disclaimerMore = document.getElementById("disclaimer-expanded");
