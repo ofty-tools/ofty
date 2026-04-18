@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <title>OFTY — Apoyo a la Decisión Clínica en Oftalmología</title>
+  <meta name="description" content="Herramientas de apoyo a la decisión clínica basadas en la evidencia para oftalmología. Creadas por Andrea Ragosta, MD, FEBO. Comenzando por el glaucoma." />
+  <meta property="og:title" content="OFTY — Apoyo a la Decisión Clínica en Oftalmología" />
+  <meta property="og:description" content="Herramientas de apoyo a la decisión clínica basadas en la evidencia para oftalmología. Comenzando por el glaucoma." />
+  <meta property="og:type" content="website" />
+
+  <link rel="alternate" hreflang="en" href="/" />
+  <link rel="alternate" hreflang="es" href="/es/" />
+  <link rel="alternate" hreflang="x-default" href="/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────────── */
+    :root {
+      color-scheme: light;
+      --c-bg:          #f7f6f3;
+      --c-surface:     #ffffff;
+      --c-border:      #e4e1da;
+      --c-text:        #1a1917;
+      --c-muted:       #6b6760;
+      --c-accent:      #1d5c8c;
+      --c-accent-lt:   #e8f0f8;
+      --c-accent-glow: rgba(29,92,140,0.15);
+      --c-header-bg:   rgba(247,246,243,0.88);
+      --radius:        10px;
+      --radius-lg:     16px;
+      --shadow-sm:     0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:     0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+      --font-display:  "DM Serif Display", Georgia, serif;
+      --font-body:     "DM Sans", system-ui, sans-serif;
+      --max-w:         1100px;
+      --nav-h:         60px;
+    }
+
+    /* ─── RESET ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 20px;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────────────────── */
+    #header {
+      position: sticky; top: 0; z-index: 100; height: var(--nav-h);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid transparent;
+      background-image: linear-gradient(var(--c-header-bg), var(--c-header-bg)),
+                        linear-gradient(to right, rgba(0,0,0,0), var(--c-accent), rgba(0,0,0,0));
+      background-origin: border-box; background-clip: padding-box, border-box;
+      display: flex; align-items: center;
+      transition: all 0.3s ease;
+    }
+    #header.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.03); background: rgba(255,255,255,0.8); }
+    #header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    /* ─── WORDMARK / CORNEA REVEAL ────────────────────────────────── */
+    .wordmark {
+      font-family: var(--font-display); font-size: 1.4rem; font-weight: 700;
+      letter-spacing: -0.01em; color: var(--c-text); display: inline-flex;
+      align-items: baseline; text-decoration: none; position: relative;
+      transition: transform 0.3s ease; cursor: pointer;
+    }
+    .ft-wrapper { position: relative; display: inline-flex; color: var(--c-accent); }
+    .goldmann-cornea {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      width: 34px; height: 34px; pointer-events: none; display: flex;
+      justify-content: center; align-items: center; overflow: visible;
+    }
+    .mire-svg { width: 100%; height: 100%; overflow: visible; }
+    .mire-curve {
+      fill: none; stroke: var(--c-accent); stroke-width: 1.6; stroke-linecap: round;
+      stroke-dasharray: 52; stroke-dashoffset: 52; opacity: 0; transform-origin: center;
+    }
+    .pupil-iris { opacity: 0; transform: scale(0); transform-origin: center; }
+    @keyframes cornea-drawing-in {
+      0%   { stroke-dashoffset: 52; opacity: 0; transform: translateY(3px) scale(0.9); }
+      100% { stroke-dashoffset: 0; opacity: 0.7; transform: translateY(0) scale(1); }
+    }
+    @keyframes iris-pop-in {
+      0% { opacity: 0; transform: scale(0) rotate(-10deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
+    }
+    @keyframes cornea-vanishing-out {
+      0%   { stroke-dashoffset: 0; opacity: 0.7; transform: translateX(0) scale(1); }
+      100% { stroke-dashoffset: 52; opacity: 0; transform: translateX(15px) scale(0.7); }
+    }
+    @keyframes iris-pop-out {
+      0% { opacity: 1; transform: scale(1) translateX(0); }
+      100% { opacity: 0; transform: scale(0) translateX(15px); }
+    }
+    .wordmark.drawing-in { transform: translateY(-1px); }
+    .wordmark.drawing-in .mire-curve { animation: cornea-drawing-in 0.6s cubic-bezier(0.19,1,0.22,1) forwards; }
+    .wordmark.drawing-in .pupil-iris { animation: iris-pop-in 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; animation-delay: 0.2s; }
+    .wordmark.vanishing-out .mire-curve { animation: cornea-vanishing-out 0.4s ease-out forwards; }
+    .wordmark.vanishing-out .pupil-iris { animation: iris-pop-out 0.3s ease-out forwards; }
+
+    /* ─── NAV ─────────────────────────────────────────────────────── */
+    .main-nav {
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    @media (min-width: 620px) { .main-nav { display: flex; } }
+    .main-nav a {
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .01em;
+      padding: 5px 11px;
+      border-radius: 6px;
+      color: var(--c-muted);
+      transition: color .18s, background .18s;
+    }
+    .main-nav a:hover { color: var(--c-text); background: rgba(0,0,0,.05); }
+    .main-nav a.active { color: var(--c-accent); background: var(--c-accent-lt); }
+
+    /* ─── HAMBURGER ───────────────────────────────────────────────── */
+    .hamburger {
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 5px; width: 36px; height: 36px; background: none; border: none;
+      cursor: pointer; padding: 6px; border-radius: 6px;
+      transition: background .15s; flex-shrink: 0;
+    }
+    .hamburger:hover { background: rgba(0,0,0,.05); }
+    .hamburger span {
+      display: block; width: 100%; height: 1.5px;
+      background: var(--c-text); border-radius: 2px;
+      transition: transform .25s, opacity .25s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    @media (min-width: 620px) { .hamburger { display: none; } }
+
+    /* ─── MOBILE MENU ─────────────────────────────────────────────── */
+    .mobile-menu {
+      display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+      background: var(--c-bg); border-bottom: 1px solid var(--c-border);
+      padding: 12px 20px 20px; z-index: 99; flex-direction: column; gap: 2px;
+    }
+    .mobile-menu.open { display: flex; }
+    @media (min-width: 620px) { .mobile-menu { display: none !important; } }
+    .mobile-menu a {
+      font-size: .9rem; font-weight: 500; color: var(--c-muted);
+      padding: 10px 12px; border-radius: 8px;
+      transition: background .15s, color .15s; text-decoration: none;
+    }
+    .mobile-menu a:hover { background: rgba(0,0,0,.05); color: var(--c-text); }
+    .mobile-menu a.active { color: var(--c-accent); background: var(--c-accent-lt); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--c-border);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .lang-switch a {
+      font-size: .75rem;
+      font-weight: 500;
+      padding: 4px 9px;
+      color: var(--c-muted);
+      transition: background .15s, color .15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .lang-switch a:hover { background: rgba(0,0,0,.05); color: var(--c-text); }
+    .lang-switch a.lang-active {
+      background: var(--c-accent-lt);
+      color: var(--c-accent);
+    }
+    .badge-beta {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      background: var(--c-accent-lt);
+      border: 1px solid #c1d8ee;
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ─── HERO ────────────────────────────────────────────────────── */
+    #hero {
+      padding: 80px 0 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 80% 30%, #d6e8f5 0%, transparent 65%);
+      opacity: .45;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--c-accent);
+      margin-bottom: 22px;
+      opacity: 0;
+      animation: fadeUp .5s .1s ease forwards;
+    }
+    .hero-eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--c-accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.17;
+      letter-spacing: -.02em;
+      max-width: 100%;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp .55s .2s ease forwards;
+    }
+    h1 em { font-style: italic; color: var(--c-accent); }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--c-muted);
+      max-width: 100%;
+      line-height: 1.65;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp .55s .3s ease forwards;
+    }
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp .55s .4s ease forwards;
+    }
+    .hero-byline {
+      font-size: .78rem;
+      color: var(--c-muted);
+      opacity: 0;
+      animation: fadeUp .5s .5s ease forwards;
+    }
+
+    /* ─── BUTTONS ─────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: .88rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s, box-shadow .15s, background .15s;
+      text-decoration: none;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-primary {
+      background: var(--c-accent);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(29,92,140,.28);
+    }
+    .btn-primary:hover {
+      background: #174f7a;
+      box-shadow: 0 4px 18px rgba(29,92,140,.35);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--c-surface);
+      color: var(--c-text);
+      border: 1px solid var(--c-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-secondary:hover {
+      background: var(--c-bg);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    .btn[aria-disabled="true"] {
+      opacity: .45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ─── SECTION COMMON ──────────────────────────────────────────── */
+    section { padding: 72px 0; }
+    .section-label {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-muted);
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      letter-spacing: -.02em;
+      line-height: 1.25;
+      margin-bottom: 40px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--c-border);
+    }
+
+    /* ─── WHY CARDS ───────────────────────────────────────────────── */
+    #why { background: var(--c-surface); }
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 640px) { .why-grid { grid-template-columns: repeat(3,1fr); } }
+    .why-card {
+      padding: 28px 24px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      background: var(--c-bg);
+      transition: box-shadow .2s, transform .2s;
+    }
+    .why-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .why-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--c-accent-lt);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+    .why-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--c-accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .why-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      letter-spacing: -.01em;
+    }
+    .why-card p { font-size: .87rem; color: var(--c-muted); line-height: 1.6; }
+
+    /* ─── TOOLS ───────────────────────────────────────────────────── */
+    #tools { background: var(--c-bg); position: relative; overflow: hidden; }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 640px) { .tools-grid { grid-template-columns: repeat(2,1fr); } }
+    .tool-card {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .2s, transform .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .tool-card-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .badge-version { background: #e8f5ee; color: #1a7a4a; font-size: .65rem; border: 1px solid #b6dfc8; }
+    .tool-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: -.01em;
+      line-height: 1.3;
+    }
+    .tool-card p { font-size: .86rem; color: var(--c-muted); line-height: 1.6; flex: 1; }
+    .btn-tool { align-self: flex-start; padding: 9px 18px; font-size: .83rem; }
+
+    /* ─── TOOL CARD DECO ICONS ────────────────────────────────────── */
+    .tool-deco {
+      position: absolute; top: 14px; right: 14px;
+      width: 32px; height: 32px; opacity: 0.18; pointer-events: none;
+    }
+    .tool-deco path, .tool-deco circle, .tool-deco line, .tool-deco polyline {
+      fill: none; stroke: var(--c-accent); stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ─── HERO / TOOLS WATERMARK (MOD 25) ────────────────────────── */
+    .hero-watermark, .tools-watermark {
+      position: absolute; pointer-events: none; user-select: none; z-index: 0;
+    }
+    .hero-watermark  { right: -22px; bottom: -10px; }
+    .tools-watermark { left:  -22px; bottom: -10px; }
+    .hero-wm-inner {
+      font-family: var(--font-display); font-size: clamp(55px, 10vw, 120px);
+      font-weight: 700; color: rgba(26,25,23,0.06); letter-spacing: -0.02em;
+      line-height: 1; position: relative; display: inline-block;
+    }
+    .hero-wm-svg {
+      position: absolute; bottom: 100%; left: 0; width: 100%; height: 40px;
+      overflow: visible; pointer-events: none;
+    }
+    .hero-wm-curve { fill: none; stroke-width: 1.8; stroke-linecap: round; }
+    .hero-wm-dot { fill: rgba(29, 92, 140, 0.10); }
+
+    /* ─── ABOUT ───────────────────────────────────────────────────── */
+    #about { background: var(--c-surface); }
+    .about-inner { max-width: 100%; }
+    .about-inner p { font-size: .97rem; color: var(--c-muted); line-height: 1.75; margin-bottom: 16px; }
+    .about-inner p:last-child { margin-bottom: 0; }
+
+    /* ─── DISCLAIMER ──────────────────────────────────────────────── */
+    #disclaimer { background: #faf9f6; padding: 48px 0; }
+    .disclaimer-box {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-left: 3px solid var(--c-accent);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      max-width: 780px;
+    }
+    .disclaimer-label {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--c-muted);
+      margin-bottom: 10px;
+    }
+    .disclaimer-short {
+      font-size: .85rem;
+      color: var(--c-muted);
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+    .disclaimer-toggle {
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--c-accent);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity .15s;
+    }
+    .disclaimer-toggle:hover { opacity: .75; }
+    .disclaimer-chevron { transition: transform .25s; }
+    .disclaimer-more {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .35s ease;
+    }
+    .disclaimer-more.open { max-height: 440px; }
+    .disclaimer-more ul {
+      margin-top: 14px;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .disclaimer-more li { font-size: .83rem; color: var(--c-muted); line-height: 1.6; }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--c-border);
+      padding: 28px 0;
+      background: var(--c-bg);
+    }
+    footer .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy { font-size: .8rem; color: var(--c-muted); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { font-size: .8rem; color: var(--c-muted); transition: color .15s; }
+    .footer-links a:hover { color: var(--c-text); }
+
+    .suite-intro {
+      font-size: .93rem;
+      color: var(--c-muted);
+      line-height: 1.7;
+      max-width: 100%;
+      margin-bottom: 32px;
+    }
+    .mod-id-lg {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: var(--c-accent);
+      background: var(--c-accent-lt);
+      border: 1px solid #c1d8ee;
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #hero   .container, #tools .container { position: relative; z-index: 1; }
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GWJJZYJB06"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GWJJZYJB06');
+</script>
+<link rel="icon" href="/favicon.ico">
+<meta property="og:image" content="https://ofty.vercel.app/assets/images/andrea-ragosta-ophthalmologist.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "OFTY",
+  "url": "https://ofty.vercel.app/",
+  "creator": {
+    "@type": "Physician",
+    "name": "Andrea Ragosta"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MedicalWebPage",
+  "name": "OFTY — Herramientas clínicas para oftalmología",
+  "url": "https://ofty.vercel.app/es/",
+  "about": {
+    "@type": "MedicalCondition",
+    "name": "Glaucoma"
+  },
+  "audience": {
+    "@type": "MedicalAudience",
+    "audienceType": "Profesionales sanitarios"
+  },
+  "author": {
+    "@type": "Physician",
+    "name": "Andrea Ragosta",
+    "medicalSpecialty": "Ophthalmology"
+  }
+}
+</script>
+</head>
+<body>
+
+  <!-- ── HEADER ───────────────────────────────────────────────────── -->
+  <header id="header" role="banner">
+    <div class="container">
+
+      <!-- WORDMARK with Cornea Reveal (MOD 22–23) -->
+      <a href="/es/" class="wordmark" aria-label="OFTY inicio">
+        O<span class="ft-wrapper">F<span class="goldmann-cornea">
+            <svg viewBox="0 0 40 40" class="mire-svg">
+              <path class="mire-curve" d="M 5,22 A 15,15 0 0 1 35,22" />
+              <defs>
+                <radialGradient id="irisGradient" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" style="stop-color:#333;stop-opacity:1" />
+                  <stop offset="60%" style="stop-color:var(--c-accent);stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#1a1917;stop-opacity:1" />
+                </radialGradient>
+              </defs>
+              <circle class="pupil-iris" cx="20" cy="19" r="1.9" fill="url(#irisGradient)" />
+            </svg>
+          </span>T</span>Y
+      </a>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a href="/es/" class="active" aria-current="page">Inicio</a>
+        <a href="/es/glaucoma/">Glaucoma</a>
+        <a href="#tools">Herramientas</a>
+        <a href="/es/about/andrea-ragosta/">Acerca de</a>
+      </nav>
+
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="Selección de idioma">
+          <a href="/" aria-label="English version">🇬🇧 EN</a>
+          <a href="/es/" class="lang-active" aria-current="true" aria-label="Español — idioma actual">🇪🇸 ES</a>
+        </nav>
+        <span class="badge-beta" aria-label="Versión beta">Beta</span>
+        <button class="hamburger" id="hamburger" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Navegación móvil">
+    <a href="/es/" class="active">Inicio</a>
+    <a href="/es/glaucoma/">Glaucoma</a>
+    <a href="#tools">Herramientas</a>
+    <a href="/es/about/andrea-ragosta/">Acerca de</a>
+    <a href="/es/legal/">Aviso legal</a>
+  </nav>
+
+  <main>
+
+    <!-- ── HERO ─────────────────────────────────────────────────────── -->
+    <section id="hero" aria-labelledby="hero-heading">
+
+      <!-- WATERMARK (MOD 25) -->
+      <div class="hero-watermark" aria-hidden="true">
+        <span class="hero-wm-inner">OFTY
+          <svg viewBox="0 0 200 40" class="hero-wm-svg">
+            <defs>
+              <linearGradient id="wmFadeH" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stop-color="rgb(29,92,140)" stop-opacity="0" />
+                <stop offset="20%"  stop-color="rgb(29,92,140)" stop-opacity="0.10" />
+                <stop offset="80%"  stop-color="rgb(29,92,140)" stop-opacity="0.10" />
+                <stop offset="100%" stop-color="rgb(29,92,140)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path class="hero-wm-curve" stroke="url(#wmFadeH)" d="M 68,40 A 45,45 0 0 0 132,40" />
+            <circle class="hero-wm-dot" cx="100" cy="27" r="3" />
+          </svg>
+        </span>
+      </div>
+
+      <div class="container">
+        <p class="hero-eyebrow" aria-hidden="true">
+          <span class="hero-eyebrow-dot"></span>
+          Apoyo a la Decisión Clínica · Oftalmología
+        </p>
+
+        <h1 id="hero-heading">
+          Un mejor punto de partida<br />para el <em>razonamiento clínico</em>
+        </h1>
+
+        <p class="hero-sub">
+          Herramientas fundamentadas en la evidencia diseñadas para complementar
+          el juicio clínico — no para reemplazarlo. Construidas en torno a flujos
+          de trabajo reales de la consulta oftalmológica, con razonamiento
+          transparente y reconocimiento explícito de la incertidumbre.
+        </p>
+
+        <div class="hero-cta">
+          <a href="/es/glaucoma/" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Explorar herramientas de glaucoma
+          </a>
+          <a href="#tools" class="btn btn-secondary">
+            Ver todas las herramientas
+          </a>
+        </div>
+
+        <p class="hero-byline">Creado por Andrea Ragosta, MD, FEBO</p>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── WHY OFTY ──────────────────────────────────────────────────── -->
+    <section id="why" aria-labelledby="why-heading">
+      <div class="container">
+        <p class="section-label reveal">Por qué OFTY</p>
+        <h2 id="why-heading" class="reveal">Diseñado para la realidad clínica</h2>
+
+        <div class="why-grid">
+          <article class="why-card reveal">
+            <div class="why-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+            </div>
+            <h3>Ágil en la consulta</h3>
+            <p>Cada herramienta pone los datos clave en contexto sin interrumpir el ritmo de la visita clínica.</p>
+          </article>
+
+          <article class="why-card reveal">
+            <div class="why-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <h3>Puntos de partida basados en la evidencia</h3>
+            <p>Construidas sobre guías clínicas y literatura científica revisada por pares — transparentes sobre lo que dice la evidencia y dónde persiste la incertidumbre.</p>
+          </article>
+
+          <article class="why-card reveal">
+            <div class="why-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <h3>Creadas por un oftalmólogo</h3>
+            <p>El contexto clínico está integrado desde el principio, incluyendo los matices que no encajan fácilmente en una fórmula.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── TOOLS ─────────────────────────────────────────────────────── -->
+    <section id="tools" aria-labelledby="tools-heading">
+
+      <!-- WATERMARK -->
+      <div class="tools-watermark" aria-hidden="true">
+        <span class="hero-wm-inner">OFTY
+          <svg viewBox="0 0 200 40" class="hero-wm-svg">
+            <defs>
+              <linearGradient id="wmFadeT" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stop-color="rgb(29,92,140)" stop-opacity="0" />
+                <stop offset="20%"  stop-color="rgb(29,92,140)" stop-opacity="0.10" />
+                <stop offset="80%"  stop-color="rgb(29,92,140)" stop-opacity="0.10" />
+                <stop offset="100%" stop-color="rgb(29,92,140)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path class="hero-wm-curve" stroke="url(#wmFadeT)" d="M 68,40 A 45,45 0 0 0 132,40" />
+            <circle class="hero-wm-dot" cx="100" cy="27" r="3" />
+          </svg>
+        </span>
+      </div>
+      <div class="container">
+        <p class="section-label reveal">Marco clínico</p>
+        <h2 id="tools-heading" class="reveal">OFTY Glaucoma Suite</h2>
+        <p class="suite-intro reveal">Un marco modular de razonamiento clínico para la interpretación estructurada de los parámetros de seguimiento del glaucoma — que cubre la contextualización de la PIO, la estimación individualizada de la PIO objetivo, y el análisis de progresión funcional y estructural.</p>
+
+        <div class="tools-grid">
+
+          <!-- ── M1 — Contextualizador PIO + PCCe ── v1.0 ── -->
+          <article class="tool-card reveal">
+            <div class="tool-card-badges">
+              <span class="mod-id-lg">M1</span>
+              <span class="badge badge-version">v1.0</span>
+            </div>
+            <h3>Contextualizador de PIO + PCCe</h3>
+            <p>Calcula una estimación de PIO ajustada por PCCe mediante un modelo de corrección lineal simplificado y la sitúa en contexto clínico — proporcionando indicadores de fiabilidad y cautelas interpretativas, no un valor corregido definitivo. Alineado con las guías EGS y AAO.</p>
+            <a href="/glaucoma/iop-cct/" class="btn btn-primary btn-tool">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Abrir herramienta
+            </a>
+            <!-- deco: arco de aplanación de Goldmann -->
+            <svg class="tool-deco" viewBox="0 0 70 70" aria-hidden="true">
+              <path d="M 8,46 Q 35,14 62,46" />
+              <line x1="35" y1="16" x2="35" y2="52" />
+              <polyline points="30,46 35,53 40,46" />
+              <line x1="8"  y1="54" x2="62" y2="54" />
+              <line x1="8"  y1="50" x2="8"  y2="58" />
+              <line x1="62" y1="50" x2="62" y2="58" />
+            </svg>
+          </article>
+
+          <!-- ── M2 — Calculadora PIO Objetivo ── v1.0 ── -->
+          <article class="tool-card reveal">
+            <div class="tool-card-badges">
+              <span class="mod-id-lg">M2</span>
+              <span class="badge badge-version">v1.0</span>
+            </div>
+            <h3>Calculadora de PIO Objetivo</h3>
+            <p>Estima un rango de PIO objetivo personalizado integrando tipo y estadio de glaucoma, categoría de PCCe y estado de progresión. Funciona con o sin presión basal documentada, adaptando su lógica de estimación en consecuencia.</p>
+            <a href="/glaucoma/target-iop/" class="btn btn-primary btn-tool">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Abrir herramienta
+            </a>
+            <!-- deco: círculos concéntricos -->
+            <svg class="tool-deco" viewBox="0 0 70 70" aria-hidden="true">
+              <circle cx="35" cy="35" r="26" />
+              <circle cx="35" cy="35" r="16" />
+              <circle cx="35" cy="35" r="7"  />
+              <line x1="5"  y1="35" x2="20" y2="35" />
+              <line x1="50" y1="35" x2="65" y2="35" />
+              <line x1="35" y1="5"  x2="35" y2="20" />
+              <line x1="35" y1="50" x2="35" y2="65" />
+            </svg>
+          </article>
+
+          <!-- ── M3 — Análisis Progresión Funcional ── v1.0 ── -->
+          <article class="tool-card reveal">
+            <div class="tool-card-badges">
+              <span class="mod-id-lg">M3</span>
+              <span class="badge badge-version">v1.0</span>
+            </div>
+            <h3>Análisis de Progresión Funcional</h3>
+            <p>Analiza la pendiente longitudinal de la DM del campo visual mediante regresión lineal y un algoritmo de clasificación multi-umbral — generando uno de cuatro resultados estructurados: Estable, Tendencia sospechosa, En progresión o No valorable.</p>
+            <a href="/glaucoma/vf-progression/" class="btn btn-primary btn-tool">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Abrir herramienta
+            </a>
+            <!-- deco: pendiente descendente con puntos (tendencia DM) -->
+            <svg class="tool-deco" viewBox="0 0 70 70" aria-hidden="true">
+              <line x1="8"  y1="60" x2="62" y2="60" />
+              <line x1="8"  y1="60" x2="8"  y2="10" />
+              <polyline points="12,22 24,30 36,38 48,44 60,54" />
+              <circle cx="12" cy="22" r="2.5" />
+              <circle cx="24" cy="30" r="2.5" />
+              <circle cx="36" cy="38" r="2.5" />
+              <circle cx="48" cy="44" r="2.5" />
+              <circle cx="60" cy="54" r="2.5" />
+            </svg>
+          </article>
+
+          <!-- ── M4 — Análisis Progresión Estructural ── v1.0 ── -->
+          <article class="tool-card reveal">
+            <div class="tool-card-badges">
+              <span class="mod-id-lg">M4</span>
+              <span class="badge badge-version">v1.0</span>
+            </div>
+            <h3>Análisis de Progresión Estructural</h3>
+            <p>Analiza las tasas longitudinales de adelgazamiento de la CFNR mediante OCT con regresión lineal y una cascada de reglas jerárquica — generando uno de cinco resultados estructurados: Estable, Tendencia sospechosa, Progresión rápida, Señal limitada o No valorable.</p>
+            <a href="/glaucoma/rnfl-progression/" class="btn btn-primary btn-tool">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Abrir herramienta
+            </a>
+            <!-- deco: arcos CFNR superpuestos (perfil OCT) -->
+            <svg class="tool-deco" viewBox="0 0 70 70" aria-hidden="true">
+              <path d="M 10,52 Q 35,10 60,52" />
+              <path d="M 16,52 Q 35,18 54,52" />
+              <path d="M 22,52 Q 35,26 48,52" />
+              <line x1="10" y1="56" x2="60" y2="56" />
+            </svg>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <hr class="divider" />
+
+    <!-- ── ABOUT ─────────────────────────────────────────────────────── -->
+    <section id="about" aria-labelledby="about-heading">
+      <div class="container">
+        <p class="section-label reveal">Acerca de OFTY</p>
+        <div class="about-inner">
+          <h2 id="about-heading" class="reveal">Un ecosistema de herramientas clínicas en crecimiento</h2>
+
+          <p class="reveal">
+            OFTY nació como un esfuerzo por desarrollar herramientas de apoyo
+            a la decisión que sean realmente útiles durante una consulta real:
+            ligeras, transparentes y fundamentadas en la evidencia. La primera
+            suite se centra en el manejo del glaucoma — un área donde
+            los datos numéricos son centrales, pero el contexto lo es todo.
+          </p>
+          <p class="reveal">
+            El objetivo es expandirse progresivamente a otras subespecialidades
+            oftalmológicas, siempre con los mismos principios: razonamiento
+            transparente, reconocimiento explícito de la incertidumbre y respeto
+            estricto por el papel del clínico. OFTY es creado y mantenido por
+            Andrea Ragosta, MD, FEBO.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DISCLAIMER ────────────────────────────────────────────────── -->
+    <section id="disclaimer">
+      <div class="container">
+        <div class="disclaimer-box reveal">
+          <p class="disclaimer-label">Aviso legal</p>
+          <p class="disclaimer-short">
+            Las herramientas de OFTY son exclusivamente de apoyo a la decisión
+            clínica y no constituyen consejo médico. Toda decisión clínica debe
+            ser individualizada por un profesional sanitario cualificado.
+          </p>
+          <button
+            class="disclaimer-toggle"
+            id="disclaimer-btn"
+            aria-expanded="false"
+            aria-controls="disclaimer-expanded"
+            type="button"
+          >
+            Leer más
+            <svg class="disclaimer-chevron" id="disclaimer-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="disclaimer-more" id="disclaimer-expanded" role="region">
+            <ul>
+              <li>Estas herramientas son únicamente de apoyo a la decisión. No sustituyen la exploración clínica, el juicio profesional ni la valoración individualizada de cada paciente.</li>
+              <li>Todos los resultados deben interpretarse en el contexto clínico completo de cada caso.</li>
+              <li>Los valores de PCCe se utilizan para calcular una estimación de PIO contextualizada y para señalar la fiabilidad tonométrica — el valor ajustado se presenta con cautelas interpretativas explícitas, no como una presión corregida definitiva, en consonancia con la evidencia actual y las principales guías clínicas (EGS, AAO).</li>
+              <li>La situación clínica evoluciona. Reevalúe siempre a la luz de la progresión de la enfermedad, nuevos hallazgos y el contexto clínico global.</li>
+              <li>OFTY no almacena datos de pacientes y no es un dispositivo médico certificado.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <div class="container">
+      <p class="footer-copy">© 2026 OFTY · Andrea Ragosta, MD, FEBO</p>
+      <nav class="footer-links" aria-label="Navegación de pie de página">
+        <a href="/es/">Inicio</a>
+        <a href="/es/glaucoma/">Glaucoma</a>
+        <a href="#tools">Herramientas</a>
+        <a href="/es/about/andrea-ragosta/">Acerca de</a>
+        <a href="/es/legal/">Aviso legal</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    /* ── DISCLAIMER TOGGLE ───────────────────────────────────────── */
+    (function () {
+      var btn     = document.getElementById('disclaimer-btn');
+      var region  = document.getElementById('disclaimer-expanded');
+      var chevron = document.getElementById('disclaimer-chevron');
+
+      btn.addEventListener('click', function () {
+        var open = region.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+        btn.childNodes[0].nodeValue = open ? 'Leer menos ' : 'Leer más ';
+        chevron.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+      });
+    }());
+
+    /* ── SCROLL REVEAL ──────────────────────────────────────────── */
+    (function () {
+      var els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('visible'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var grid  = entry.target.closest('.why-grid, .tools-grid');
+          var delay = grid
+            ? Array.prototype.indexOf.call(grid.children, entry.target) * 80
+            : 0;
+          setTimeout(function () {
+            entry.target.classList.add('visible');
+          }, delay);
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.12 });
+      els.forEach(function (el) { io.observe(el); });
+    }());
+
+    /* ── HEADER SCROLL STATE ────────────────────────────────────── */
+    (function () {
+      var header = document.getElementById('header');
+      if (!header) return;
+      window.addEventListener('scroll', function () {
+        header.classList.toggle('scrolled', window.scrollY > 10);
+      }, { passive: true });
+    }());
+
+    /* ── WORDMARK CORNEA HOVER ──────────────────────────────────── */
+    (function () {
+      var logo = document.querySelector('.wordmark');
+      if (!logo) return;
+      logo.addEventListener('mouseenter', function () {
+        logo.classList.remove('vanishing-out');
+        logo.classList.add('drawing-in');
+      });
+      logo.addEventListener('mouseleave', function () {
+        logo.classList.remove('drawing-in');
+        logo.classList.add('vanishing-out');
+      });
+    }());
+
+    /* ── HAMBURGER MENU ─────────────────────────────────────────── */
+    (function () {
+      var btn  = document.getElementById('hamburger');
+      var menu = document.getElementById('mobile-menu');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', function () {
+        var open = menu.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+      document.addEventListener('click', function (e) {
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          menu.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }());
+  </script>
+
+</body>
+</html>
