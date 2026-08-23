@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <title>OFTY Method | OFTY</title>
+  <meta name="description" content="Conceptual framework behind OFTY: modular clinical reasoning, longitudinal interpretation, reliability-aware analysis, and explicit uncertainty in ophthalmology decision support." />
+  <link rel="canonical" href="https://ofty.vercel.app/method/" />
+
+  <meta property="og:title" content="OFTY Method | OFTY" />
+  <meta property="og:description" content="Conceptual framework behind OFTY: modular clinical reasoning, longitudinal interpretation, reliability-aware analysis, and explicit uncertainty in ophthalmology decision support." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ofty.vercel.app/method/" />
+
+  <link rel="alternate" hreflang="en" href="/method/" />
+  <link rel="alternate" hreflang="es" href="/es/method/" />
+  <link rel="alternate" hreflang="x-default" href="/method/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────────── */
+    :root {
+      color-scheme: light;
+      --c-bg:          #f7f6f3;
+      --c-surface:     #ffffff;
+      --c-border:      #e4e1da;
+      --c-text:        #1a1917;
+      --c-muted:       #6b6760;
+      --c-accent:      #1d5c8c;
+      --c-accent-lt:   #e8f0f8;
+      --c-accent-glow: rgba(29,92,140,0.15);
+      --c-header-bg:   rgba(247,246,243,0.88);
+      --radius:        10px;
+      --radius-lg:     16px;
+      --shadow-sm:     0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:     0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+      --font-display:  "DM Serif Display", Georgia, serif;
+      --font-body:     "DM Sans", system-ui, sans-serif;
+      --max-w:         1100px;
+      --nav-h:         60px;
+    }
+
+    /* ─── RESET ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: 20px;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────────────────── */
+    #header {
+      position: sticky; top: 0; z-index: 100; height: var(--nav-h);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid transparent;
+      background-image: linear-gradient(var(--c-header-bg), var(--c-header-bg)),
+                        linear-gradient(to right, rgba(0,0,0,0), var(--c-accent), rgba(0,0,0,0));
+      background-origin: border-box; background-clip: padding-box, border-box;
+      display: flex; align-items: center;
+      transition: all 0.3s ease;
+    }
+    #header.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.03); background: rgba(255,255,255,0.8); }
+    #header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+    /* ─── WORDMARK / CORNEA REVEAL ────────────────────────────────── */
+    /* --- OFTY LOGO (official image asset, embedded once, reused below) --- */
+    .ofty-logo-mark {
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAADgCAMAAADWt0XUAAAAflBMVEUAAAAZGhcVV4r7+/tiYmDo6eijo6Ktra3k5+h0dHRolrelpaSrxdUDRnsyaaBSiK+pqvur+/uWtcubt8vLzM1iqa1zocGop6YWPFuzyttAQD5sbGuAgH56egp/f/8PeHgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABydEq1AAAAIHRSTlMA/v4R9mDkBJQD+KTj+gRgAwTdqtQF+Gf+of2l9wICAkJmE8AAABx6SURBVHja7Z0LW+q6EoYj09xa3QcRRNSl//9fnqQULArNlzRJC2Se85y99l5KQ/J2MrdMGCtSpEiRIkWKFClSpEiRIkWKFClSpEiRIkWGhYgu/lWZnSLz5bYHsDSitTzIkelCcJH5kdtRaynV3R96IiUzAMuCbpFZijbYdqhyZaVpGqb2wru/2kNOheEic1G60qpaRpwTXwtRXRAh1uYHWsKZLjq4yAz07d5I4HzbGGwfHGIRZpzvAdZl9opMJkbjSkuuaj7c3PYJrhrVqmDLfpEiE1gLRuUyLoUPtyc6eGs1sPHkIjmM+4BG5zMe/3T8V7+4CUE/c/ooRkfLnp0M4MzHHv/q8AMUJsMDpF+f3g3Y9wmtmqEYkaKfCTszCz8RKeqemchY0Db6xRULI/cA8EfD46jfzdxsKXm7Skt6TcSoJ6Xg16pLg64YRW4r75VQbVCYxqvdInkk37okINeiy3kzGtyj/m2M+fBv5C7xciqrx56sTv7tl/z8zuPqZfX7U1bdBxzF/MfV4Oe1Py+ySNP8/NH5E7GeKexqwXqXN6IJ+2pGxDa27aAtvg2gc98PITLE/m1nRAcPideLOcnTwy2LIHClpObVSLUWO75gzQVXMEGI9ZofEhZrIdymcSUsvmGWoqbHWbG7eLtpeCsYXlIjt+cPsyNHCy8YJ00Nossq0Sh16jnaP3LVNJ9u64FCtK/ZWwq8twlvE9HLdKFr1CfnbURFt/UM1BbkSK1tQo24cqlsq311kBnemQ1PTwXe+ZgNZu1Hmg0qls0rHQbDPm5guP33t3bBUKzbAIWD3xZf/8iDeTPW68dVU9evdYE3kbxXovow9qDyiQJYm9E4SL5xKfsbjX1UFHhJO9FtnVCtLz9Pty+jw2KumhDboctQEOeKrVYs2NEyqvsoBd6T5W24MQex9M3vdbF1WrwRlc+zOLFYsTJqIwwudLX7Y7R0OnxVoO1wyFSY9+MR17+1jzCG2SZvTiXmEDjNHuVzAJx4C9K/AK1yyGoQJwXwW4k1dWowWniMKye68G5PDju+Ei3kAXlHksvNpp0oAbLbKD/Z2Tiv0zZ5G9wQG/dDBWR7AuO1gd7RCIt9GrR1XHzVYZeO1roNsbq+mDE9W941k5E0r/W6hENVeuW9jfZdD+NrNqjg/Cp92f/D4g91wPQY24Q9Duv2t4trYz3a07T+WVGIOuQMyVCZB27HAdyurx4PkgF4eP9+2DvsMTNrZhLE8BO90wv2rRLDRQ98jK1OS5DelX2K1l9tXMc+71nKZSvH80vP+38s5ZLp7+/v/zbdnKjHuvaD9+DRtrMlL4qN0iDB/UqZn22jOa2S+v0p7f8ftmwbbK+C2Y1Bbue3s4Fd16osq9hiZiWGZ7JSIc8zv8Cbd5fjNsLqMWNC7N72Neq/py7LpN0DW+Pa/KZ6qXF492Fs1u2fLicdgte9O3Vbdjva0IR+Q5pi4tRcVoJRjyjYsNWwoq9CoxlmRh0rZL9M+Mg3TAH0/o/9F7gbte4h0arG4LV2PMONq1jw9oYLpEbHpSRQrcLFhXckdh3OxUcd49XBu7v5NYf5LkbtVwasdPDux2/Z4SsE3sozyhQZ3r0eYkHaV0QujpFnDfr3hkWuIrVp3cr1xWjE6jvWqBpn+Kqk8B40Gp3R8G9/58nvi8SH92BreydsY8N7Nu3Wlh5Ertrl28GvOrba3TifH8lmzvxm/ZQY3v1j/pa0vf3ZQjxXJg28nadc+cIb9aiWGYI4YzNErn20Txn8nmsaq+nNrzep6DU23ioDvK1PtBqEt7Gnq+cBb5sp9VO+0TXvGXibyC/I+TfkF7sU4SGNy18IPuRGL4sM8LIzUeW3X+x621bJ4N1vFdV0DpsdgUird9uDOVVydlu99ZFo8paMZYKXfuvetxPNFRBKTAgv4GucPkZGh3f96wlxz6oBcfJYu4nZxpz0hj6Is0ya9+uXln87TeEEjDwhvG0MyYPe2Kd46Re8FZdxfbVs7LbphMqZntRhS1Rngrf1Ds/CW4X5BWnhZdqHXhE5/PrLbAhc3cFYnCOIFTHrop0ehNG9Mgzep0zw2hmrz8Eb2O0gMbzMx3KoeGSL9BTehuVml8dNhwD00rzhNYuyOwNvRTIZWqPgJQ96G4ocgq1O01xRWXKy+66ifh2zbTRul1fOG16jUF7/wrudK7x2dt5x1SsjKt4TVVXx2FFk19Q1sU14V1QuiN5lZs3L+B94q9DsOQIvU+OYguouO+0YFbAmnVZ3O1CCx29m5Fwtfw8xN7yaxG94QxVvDngBjZEi1GvPgZ3EESNn1lwTx+O3QDOGQ3R6M8PLvn6iG29jazNyaF7N4LO9IuZK975bFVcNAu+jSNFCSrvVgO9bmhveXrisg/cjeE/MAa9HuPedk0zBV1z7kyR3Wp88TVN+pxp491ys3PCaj9qdtHuqmmBbMb3Dtt/CFW71RjIc6ETxRj3xAyjARP2gtavIwdszzQ4v+z72Pjm4a/OGlznroo4Sq/vHyfEvFdl32rpm7TPRZSjGAvsETgJqP3gXOeH9KXF4OlY1zBtegjvhVXEyqqcWb0DF0qAn6PwuihI14pe0jVuel13z0rH+/a0rXQpe8VzwmifBhkOUuEBvf41b0+A685PKWzt+MXfoxqfxWn6zQR8SFW9jLbpsZoNE42VVDJ/t5DBv3BCvdtV3tWexkvWrRw58+zw/P7z01dkNb6MyFDnhJYnGy6Kord6rErdkAmlIKWIegw5RvR5TSIy/5oXXftgPvIJfAbweibZm9ONOLN4tRTUaCFB8Ka8OhopFGriOI7vDxtimqy17GhvEzAgvww2HsYvft1EExbyGWkN6L+klNwQMwSyZni28tNmfhH9rzwdcBbyE15eN7T7SV7xV7BIDrGkVm1j1GidVzxVe9s1ejvCOObefU/PCwd6RFWAnyTURsxASiviJ5PcFI1uYAJmYQvN2t2NYs0GMCSrmhFdn8tn6gdi43poGXr9Kpb4aT2OqF/viU2heuW/i8NSF4K8CXvMp6GH4cT5bTzNFDZNpAoLVFSXXvEC0Dm6DMQW8XXHO09jjLXnNBvLw2YL7EGimkp0sAobPkrOLvUTvaraat8sQv3Vt3K4EXubhs8nwpRU/jcnihska5LWjHPRWiOpFRpI/SdHi+7iHd1xGKjO8QFXUOJ+NTirYqqjH1iSGDEsvBE3jGpnCKTSvDZisrNlQjevJkhlePFwWWuJw4q3FzBaQxhQv0ywHvlWksUwCry0QUS/NduQlTLnNBrw2MtBn6+/tkc+tIXP1yUnn0LyQ84B8/2ngZV9HbXZF8BLus/l3DbR2ie6HyWKCBPKSR/FiOgBRvRPBy2jzn706hF0TvB5HgkTIa9k3quOGybCp4nnQ1diVn0DhwDQOW76tMCq8OmmJg+z54RWPCC+4Y8Ru03rZd2AC2r2owBs3Z0TwoQpfn62fGH5XMXdwsOlaQzqX6uVxHIdl/pLIa4aXCDxU4Y0fnVTkxPXWqHmYT6yhfU0rbECywBt33mGfzTdM+/PJ0ds7IawITtlWDptEZ91LMRt8g/24z6b9dPpP7UTcolqJRfiyWQ1Wtg8xjPCpog1Xa/OyNCUOfacqcqcGcJNWLBu8GtMAznko8Cbz2by89/7Fa03c4WJHmCqus5kNpLE5dKWrnwu83moDPc+mcAV6khiOfbPQRwIrZ+wcNg8RVG+BN2Ab/kR9tpDVfI97BBLcou3VP/lEYjeFuRavmA0BDpBHno3AF4JXSc7+oHGy5IfXguxwV4VTiTaEBP1hnw1sd9MrE6yidluyVZYVuEtkjJShjoMjZljgDZh7n/Ns2lvxxj0/AVoNguucS4eWOA2XeDyng1du2DNNDS9LcaQQNhywV4dO8xORr49HKckLL9j+bTjekE7zbmaheT9TwIurXmg37ic+4obJ4Mbu+XLDh9eVV+PjDQnNBm7+RzcJr4fP1jgLdKivHWN7a+iZ5wngxXaE9ZDdkAreL2Kvi8UrT9kHYDp4oSYIaJ6tnxiO3aIRPXdnTN6sZoMZGIMG9jlFtOGLtX1MH1M6sQi8IhW8uM/mhlekKqmFk9kNy8uuGdoWfPkHjPFE8H5196bcKry22gWk1zWAXsDebt4U9x0DzRuVM1K2hxe0Z1T+aINZkZvWvD7n2YbjB33nT8R2+QnVbyrsrQlfW7kEX6uhMEgieDe0u23N63En/HCskn6s5yr+6V3wDQvpd6g3//3X3Ru0WYYs8gdojcuLQ0sW520bQd4wvF49SOD8ROzZAi1z3x5l5se/uxTIIZblPXBw+oby1kngtZGQ1a3Di1f2DvhsJ2W8FL0ADr0JxtNRlPt7cRhbWXn5H2sV98az+L4Z/eong7e+dXiN6t0+oBalBALGDYvdKUyC8Si/Pk+yje691K8/hLzWO9+QPoEe28P6si2VxmzYUHe5+y3Dy5hHgQ45jdIEjcI0aFf61ENa04a/vP6BhK2s8vV5sUCTRuSF15Yyre4AXg2fZ2vcnxC1U0O3DhoNRnv5a/zlfBFtXe/IixHUHs9tNhyKhG9c88J5NnXeo9Hp8hPMp36I0BzFF+tuwzmP74qjnhvBhWUDbQDSmA10uBz71uEd1+tfMvUUdFwTHR0KL17ZsL+R4TK+Ow/NC8J7OWWeIsNmXOj6PuDFe/0rh8XbUPy+zpqh/hpYzPvNyHXspsUyagx6oH1DGrPh+HreuubFg71nqst6J4bT9AmDY3kYvORm18gL+FXg2qbmoimSAF5JP8fiJof3MzG8Hg2nf88E/bgsaS78pbjwPkPsWnq/CZo6jWYo82leuTyEGuYAb+rLmXT4/Ww9rZ1C8cIF32CHHgLZNfTu02/OD9y+g68Wy2bzbthucT/w4uGo3+fZTsJkKbw1OBj1sAUe392CAwlyjIY83MlLECVw2PqxlJuHl+GXBP1yPGTfW5OUYlMAk8PQAbYN7VB2FzVnkeHNonmXG6b62ZfJ4WXp73REfTZxcisx/QQqRJozOJrW2MDeFfvnDPASrxc4vW6zNxe8DIWXbPXaSebwDuD16EHSC4eZP372zv6kmCQJVxy73UVbhbTwkB2kebHOQ2ybPNqwp5T/2ltuPdqwly3ss8kfeJv3pGEynys73fBKtvNh16he53ciCZ7BvFwQDWle+jsvf8j9erZHO34XbNwDvD61kYz+7JnJrp3Ez+c74dWMXr3gNarX+aU0Pm0XKMJs3uXGuo9f32dCC1LK5f5iKq7+uqN3oXlxw2F74JT6YbJEZx91RHiJ+bGLqF645k2QDId3RW7hitVnvuBdwEvelwT1zk9UqboDEIsGr0+Y7Ef1PseDV48wGx7VOdkd/vC4WtUXXNE7cNj2y+uVDqDkYTLmc9tspbQT3toXXiTWmwPeEXIPcV4GX/twyLP17Ix03RkJLhpyVUSaASrvlX91fjGPGOOIJEWB1+3Ye10S9KN437fJGtxJD3il69t5Ww2L2rLlmDW4qKnAm5ReCWezTropCErWqkYTDK97imr/pd847YYC7zzg9SnQoZOihmTTg9+dUbldvwB4X5zfDIeXCrxpzV6Cz7P1w2RE6QaEwzs8RUumAuBdOZe+wDsXeBlqYlYqg7fGPM69O+H9CoK3Lpr3iuCFnWeBNYIaDW8Dw6uvE97nq4X338zgxeOqD2mryQLglQXe+4bXgLj1Yjfx0Aq8XbakHpYCr18+Nr235pMDcEYbEsHrcXj1gnmFwFsrh+x2L2JV3zu8Rtn5GA4VTzsyj2gDDTfn1YxPHG2Q4fDaiN1gVY4dCOeP9Z3DixfoJPfW2uHESlIYtgPgBXo/jU1SYMXoTMqlfJZSkv3nUSy45m82+yIMot3qnqMN7TpXc1G8PvC6XqNNSIbNdf6GMsHrLIqnrkPgn0ZWdwYvbmfaXEXqfQCGl0tHYY6jydOFQ5hL1xA/smhe7Bw+mXeNr+4aXthwYGm9Na/QXcWHbV577sO3GB2oKvMoiRx1hu3bg6jHezYbNMG9yGVi1etTz8uc9byv/laDAxoafwwItHl9dM/jHcML3wgvKMPRumgnKcjfbuDOojLN88CLa17znL7lcHfwoh100sMb8wCmfyqrdjXqxW9wHQuvT8ecr34B3d3Bi7beywBvzKPvS3rxDZRp58aAH1uVY2xer3ZPz0yxezvDdmL2flwdvMxJmmeeoiYWDd7Lra9T9OfdUH3H8GKZrfQOm0/HHGe7J6NHvaxe5+sQpd1TCni/f17T++iYExBfzaF5GZofBhrtkVevsgZYdLi1cV5459TWfwp4aR7wMrSrP9Ti1GgkNNb7VCOnmzSD+/PKfJ3R+52t7hBeNhN4PfrzImUWpOFwWeu1A/BqNNjAcsJLy0N7oALvlPDC7Ss5YIDjbXNQkxy+k2Kgrf9r/KuslrO5RPC+Na/A4UWiSBi9OyTz7TG6ywZ0GnjZPWtePRubF9Vtn/BtQI8Iu8iSR7mHLQm8dmR1gXd6hw1vHAzRK+1V787MGrTiHte3qrxmgzW3VgXe6TVv9OtbmY2YDfCy4vDl2TrK3cMpzIb/unRigXdCeLXHXS8SVUuMdhfxrY25+w0PjkYWRCaDd9MZvfdX2zAnzQt3wF3D7f7MDxJ/OVsg+frIPdaa0CN2A2NLBu/+TEWBd1Kb1+OiIj9zRL32WolbfurXnUHXo+4bjZRVPLvZcOjNVuCdrrbBXs6kwCSWzzLRpq10V0ys9p0PXldsp+zmvmQJ4B042pwkSdFKgXdqePF69Ip8P7jl9yDUfW+/T8BMmqEESip4tbEb2OKVp1ybYjZEg1cxvyN15pM3y343Bel5JA8e2lDRUDrNS7RWlFLxzhVeNhvNyxieCAgbjdZf+vsr4JfR1tdm/dgE8DKW+nzsdWteygAv3D6t8dv0o/iS76C/JqeAVz8npve6NW8eeMFIr0h1J9Fl2aJv1eWPWCbUvKllpvDSfMwG84KgbhHLrXkxg2Y95BsUeKeCN4fmha/KMLuzzjlFaOa6GqxQu154dYEXiaaCkCTtcx0Orxico0RJigzyr8Aby3t8SHf1/MU5UqMDZQXeJNpuRvASmMjKDq/ANoTBIEiB97bhxY3L+c2RMwhyvfDqAi9iXILdG5jKqXoJTFE0w5XtxWG7cbOB0XZ+dgNYleOKgSyBPj7FbLhmswG2GzKGG7CWWA/CMUXPBd6bjjYwtKjX3bAsJrvYC+U64FHgnUrzZrthC+x33eSM9G6xTpqOT7l1eNmM08PZBgS5bIITZZshaDNobhdeduXwZoxNKcw7yqd6oUBZ5ay3KPBO57DNTPWqfIqXR4iTsbT1vMVhmwe8mpooJma88QhI8WrEbCjw3rLD1ja6wbbpPC+UxHrlAO/Sc0lS3LzDZnZfyEFieaYK1DqACV4ybHcAL1hKkOs4BRRrQDJ+Bd57gBe7Vjb9dch4rAGKfZSTFNPBmzHe8A9SvU2OFLGGii0apMlvgfcu4JXgLS9ZKt2QZYP6Vj4XeOOrltnBS4RVRqr0qhe6o6jaQgMpmnca1ZJZ84LXaIsMd9EjbxF4mLnAex/wYj6bdZNS0wusGuo5FnjvBF7JkHuqk7tskPnSgLZ3gfdO4LWn4KePlkGOo0BvGbjeM2yl3VMKpZc24AD5jRXsNhZ47wVe7P6dtIWRkNuIV8UXeBNouFmaDfienWxcGgk1eBTFF5t3OnhzbwiEnGBIafUiZ9d8VH+BNwEk84S3HdsHMrJkqtc9M++K4Zq/ZNjuCV7E5kw3Y0io2ctqKfBOBS9NonmBVjWp2p1qQPFWXhZ3gfeu4IVquppUEyMAdn1Wq8B7X/AinZYG74EY8+jKHeH1mhUEXlbg9VNu83XYbMjBnSZOcRRTupfL+06iAu9U8E6keW2a2Elvk6K6rHEGGnxDzEjfhgJv7ICQxUNONm8E6MDos+Zuhd54p0eK5p1G804ILwG5goriZomBGF3DvB9Z4L07eKFMV2yz15kdaZj0fl2K2ZDAqJw7vIj3xGIO0N0jx7Dr/7zl1cKroT6Z861tmHTy3PRW23gTJ52pkSB27bdwwvuSvfQUhPcBglfnHRexK4AXoTdacaS7w0YTRpjRvMzB7tNqlvBit9e+s9zwGnmYb5zXI2IWi17n21w1ge7hN+OLK4UXa9y5zQ8vXQO82eh1s6tCQxsbxpzw1tcMb5P/xALiSH5OP6faSa+IQK9G2A2ciquFl9Bu9fnhVVhLmKnn1BanO3xeNvoyeOlapir8PJT5xRcXvIu5al7sEkWe2W6QYFM7mn5OyfmijTxXQc6DP2JENsR8+OrJSe/zLMO8hN5LmhderCPjw3pyoxcyfG3jpeD5c575tCZD+DSYj3dGyhaLHen5oQveG25UXGargWEX5M0BXnu7q6Pn/7sas60PK3a7NmNWh5yRMiOrGepdzSCT16q4rEaPZNgFeYLNwxaTzsMVtgBOhiyQi91mXHMps66Pbnat0Ts7xasxq2HvEWSVBtwR2Ey2M+O3CWc8IGQHGrZIbPpo3AwsEavB2A1MzoxfCd4bvk8QZ+3HWIHDmoXR2ynf4ahD1Vjbi3zeB5farcZ3XXlmCoLXqN6vqwyUZY/0avCy1AlieIOw8WHLV1jli7ZJad9KLlhaT4S+6XUByW5e0TICb4NOehr27MD+4S+VmpEbbPYm9elqZGPpJWBttPGk1g61O36mN5DF26ne/2akJxhsNByiZZTppWIeLxWRprkoA+kMOxjbwX4/OaTGurAkV8JhhMiR31zaZy1QqT2tnoQ612lPnd+kdPLhS+azIeyHpWeypbXzCpi+tP+adN7O1a37N6x12/SMHqO55GZj/rlb4FLbY8n/Le2XpKkU7nF+Gi92uzPV1m1LM3jqnA/iImBYmk03p78dN1fQVzR7PWDDPZoOovVekRqzgnNRDRb52RdWhi7/cZY45qv1or2cs7YYovugjPN9mJ0WXb71Q+TH49i/8O1sRxq87k0DDa/b5WHpbnH05FYESZfnZuzVRp1dfPOfuGqEU+sGxsfoR09w9fK68BVWvyje0xLZplr/vHrKzM9DiFRVozhFHjydDKwKGdbnybDmUKzjqtYxUynWnDidypqJatjqECPtBdtzQq0fX+t6ESR1Xa/Wqhsuy+YFkZ0qtV6b6akegqWys75uJ51HGvye23EDM6MShzmd3gBuZ1s59xA7aCONkfYPlRN4azBLHTwq/vhqqGWL0cKYhXhHeQp2tJ1LI+8PUcR+VCVUBKtHM94OrIo2qvUMjF9qjQceuMFdUrpWZcjwrMyGrRYx5S1TpaRPPsLD2BxfbJZgYDlD0sOh2rYtVKTX0moKQ+7IhOIirjznshuq+PBGqZRMAe9MAr/aJiRIfYhxc/8uRGvSjwSXviNr3qfr1rx8jgObieY9hB7+GVOTq1AFbM1i3kbGYmBCqzqaiHrFaJnJA+5My4giYnTxjD4w0cyrcNomwlqPtGk8Lfuq+mijKG2YM2IgJJ7kjDZEl4jRhuubUt/UBdnsw1YgOvjdKtwt520qTMYL/s3vOIRHkiLq4I33EGVSNY11Q8xQjt9MSz07dumQQGwBNnvNuo2LXdg5RBsA5m2uWUcvRA3VB3//0wyC6Ww435B/wL9nDJjxeeQm3JmYPcTHmSf1R/jhO7fuGbEi9yVzXvHeq3j+jewsDFmWschs+T0gbEwvbQwdaYVaO4x+/ViRIteId5EiRYoUKVKkSJEiRYoUKVKkSJEiRYoUKVLk3uT/A5PZiLvKv80AAAAASUVORK5CYII=");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      display: inline-block;
+    }
+    .ofty-logo-header {
+      width: 88px;
+      height: 28px;
+      vertical-align: middle;
+      position: relative;
+    }
+    .ofty-logo-header-base {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/png;base64,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");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+    .ofty-logo-header-dot {
+      position: absolute;
+      left: 15.93%;
+      top: 50.39%;
+      transform: translate(-50%, -50%);
+      width: 6.4px;
+      height: 6.4px;
+      border-radius: 50%;
+      background: var(--c-accent);
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+    .wordmark:hover .ofty-logo-header-dot {
+      opacity: 1;
+    }
+    .ofty-logo-watermark {
+      width: clamp(170px, 30vw, 340px);
+      aspect-ratio: 700 / 224;
+      filter: grayscale(100%);
+      opacity: 0.06;
+    }
+    .wordmark {
+      font-family: var(--font-display); font-size: 1.4rem; font-weight: 700;
+      letter-spacing: -0.01em; color: var(--c-text); display: inline-flex;
+      align-items: baseline; text-decoration: none; position: relative;
+      transition: transform 0.3s ease; cursor: pointer;
+    }
+    .ft-wrapper { position: relative; display: inline-flex; color: var(--c-accent); }
+    .goldmann-cornea {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      width: 34px; height: 34px; pointer-events: none; display: flex;
+      justify-content: center; align-items: center; overflow: visible;
+    }
+    .mire-svg { width: 100%; height: 100%; overflow: visible; }
+    .mire-curve {
+      fill: none; stroke: var(--c-accent); stroke-width: 1.6; stroke-linecap: round;
+      stroke-dasharray: 52; stroke-dashoffset: 52; opacity: 0; transform-origin: center;
+    }
+    .pupil-iris { opacity: 0; transform: scale(0); transform-origin: center; }
+    @keyframes cornea-drawing-in {
+      0%   { stroke-dashoffset: 52; opacity: 0; transform: translateY(3px) scale(0.9); }
+      100% { stroke-dashoffset: 0; opacity: 0.7; transform: translateY(0) scale(1); }
+    }
+    @keyframes iris-pop-in {
+      0% { opacity: 0; transform: scale(0) rotate(-10deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
+    }
+    @keyframes cornea-vanishing-out {
+      0%   { stroke-dashoffset: 0; opacity: 0.7; transform: translateX(0) scale(1); }
+      100% { stroke-dashoffset: 52; opacity: 0; transform: translateX(15px) scale(0.7); }
+    }
+    @keyframes iris-pop-out {
+      0% { opacity: 1; transform: scale(1) translateX(0); }
+      100% { opacity: 0; transform: scale(0) translateX(15px); }
+    }
+    .wordmark.drawing-in { transform: translateY(-1px); }
+    .wordmark.drawing-in .mire-curve { animation: cornea-drawing-in 0.6s cubic-bezier(0.19,1,0.22,1) forwards; }
+    .wordmark.drawing-in .pupil-iris { animation: iris-pop-in 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards; animation-delay: 0.2s; }
+    .wordmark.vanishing-out .mire-curve { animation: cornea-vanishing-out 0.4s ease-out forwards; }
+    .wordmark.vanishing-out .pupil-iris { animation: iris-pop-out 0.3s ease-out forwards; }
+
+    /* ─── NAV ─────────────────────────────────────────────────────── */
+    .main-nav { display: none; align-items: center; gap: 4px; }
+    @media (min-width: 620px) { .main-nav { display: flex; } }
+    .main-nav a {
+      font-size: .82rem; font-weight: 500; letter-spacing: .01em;
+      padding: 5px 11px; border-radius: 6px; color: var(--c-muted);
+      transition: color .18s, background .18s;
+    }
+    .main-nav a:hover { color: var(--c-text); background: rgba(0,0,0,.05); }
+    .main-nav a.active { color: var(--c-accent); background: var(--c-accent-lt); }
+
+    /* ─── HEADER RIGHT ────────────────────────────────────────────── */
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .lang-switch { display: flex; align-items: center; border: 1px solid var(--c-border); border-radius: 7px; overflow: hidden; }
+    .lang-switch a { font-size: .75rem; font-weight: 500; padding: 4px 9px; color: var(--c-muted); transition: background .15s, color .15s; display: flex; align-items: center; gap: 4px; }
+    .lang-switch a:hover { background: rgba(0,0,0,.05); color: var(--c-text); }
+    .lang-switch a.lang-active { background: var(--c-accent-lt); color: var(--c-accent); }
+    .badge-beta { font-size: .68rem; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--c-accent); background: var(--c-accent-lt); border: 1px solid #c1d8ee; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+
+    /* ─── HAMBURGER ───────────────────────────────────────────────── */
+    .hamburger {
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 5px; width: 36px; height: 36px; background: none; border: none;
+      cursor: pointer; padding: 6px; border-radius: 6px;
+      transition: background .15s; flex-shrink: 0;
+    }
+    .hamburger:hover { background: rgba(0,0,0,.05); }
+    .hamburger span { display: block; width: 100%; height: 1.5px; background: var(--c-text); border-radius: 2px; transition: transform .25s, opacity .25s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    @media (min-width: 620px) { .hamburger { display: none; } }
+
+    /* ─── MOBILE MENU ─────────────────────────────────────────────── */
+    .mobile-menu {
+      display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+      background: var(--c-bg); border-bottom: 1px solid var(--c-border);
+      padding: 12px 20px 20px; z-index: 99; flex-direction: column; gap: 2px;
+    }
+    .mobile-menu.open { display: flex; }
+    @media (min-width: 620px) { .mobile-menu { display: none !important; } }
+    .mobile-menu a { font-size: .9rem; font-weight: 500; color: var(--c-muted); padding: 10px 12px; border-radius: 8px; transition: background .15s, color .15s; }
+    .mobile-menu a:hover { background: rgba(0,0,0,.05); color: var(--c-text); }
+    .mobile-menu a.active { color: var(--c-accent); background: var(--c-accent-lt); }
+
+    /* ─── HERO ────────────────────────────────────────────────────── */
+    #hero {
+      padding: 72px 0 60px;
+      position: relative;
+      overflow: hidden;
+      background: var(--c-bg);
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 90% 20%, #d6e8f5 0%, transparent 65%);
+      opacity: .35;
+      pointer-events: none;
+    }
+    #hero .container { position: relative; z-index: 1; }
+
+    .hero-breadcrumb {
+      font-size: .78rem; color: var(--c-muted); margin-bottom: 28px;
+      opacity: 0; animation: fadeUp .4s .05s ease forwards;
+    }
+    .hero-breadcrumb a { color: var(--c-accent); }
+    .hero-breadcrumb a:hover { text-decoration: underline; }
+
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .72rem; font-weight: 500; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--c-muted);
+      margin-bottom: 14px;
+      opacity: 0; animation: fadeUp .45s .08s ease forwards;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      max-width: 100%;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp .55s .15s ease forwards;
+    }
+    h1 em { font-style: italic; color: var(--c-accent); }
+
+    .hero-intro {
+      font-size: 1.05rem;
+      color: var(--c-muted);
+      line-height: 1.75;
+      max-width: 100%;
+      opacity: 0;
+      animation: fadeUp .55s .25s ease forwards;
+    }
+
+    /* ─── DIVIDER ─────────────────────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--c-border); }
+
+    /* ─── CONTENT ─────────────────────────────────────────────────── */
+    #content { background: var(--c-surface); }
+
+    .content-wrap {
+      max-width: 720px;
+      padding: 72px 0 80px;
+    }
+
+    .method-section { margin-bottom: 52px; }
+    .method-section:last-of-type { margin-bottom: 0; }
+
+    .section-label {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--c-muted);
+      margin-bottom: 16px;
+    }
+
+    .method-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      letter-spacing: -.015em;
+      line-height: 1.25;
+      margin-bottom: 18px;
+      color: var(--c-text);
+    }
+
+    .method-section p {
+      font-size: .97rem;
+      color: var(--c-muted);
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .method-section p:last-child { margin-bottom: 0; }
+
+    .section-sep {
+      border: none;
+      border-top: 1px solid var(--c-border);
+      margin: 48px 0;
+    }
+
+    /* ─── CLOSING BLOCK ───────────────────────────────────────────── */
+    .closing-block {
+      background: var(--c-bg);
+      border-left: 3px solid var(--c-accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 22px 26px;
+      margin-top: 52px;
+    }
+    .closing-block p {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-style: italic;
+      color: var(--c-text);
+      line-height: 1.6;
+      letter-spacing: -.01em;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────── */
+    footer { border-top: 1px solid var(--c-border); padding: 28px 0; background: var(--c-bg); }
+    footer .container { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+    .footer-copy { font-size: .8rem; color: var(--c-muted); }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+    .footer-links a { font-size: .8rem; color: var(--c-muted); transition: color .15s; }
+    .footer-links a:hover { color: var(--c-text); }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ───────────────────────────────────────────────────── -->
+  <header id="header" role="banner">
+    <div class="container">
+
+      <a href="/" class="wordmark" aria-label="OFTY home">
+        <span class="ofty-logo-header" role="img" aria-hidden="true"><span class="ofty-logo-header-base"></span><span class="ofty-logo-header-dot"></span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="/">Home</a>
+        <a href="/glaucoma/">Glaucoma</a>
+        <a href="/method/" class="active" aria-current="page">Method</a>
+        <a href="/about/andrea-ragosta/">About</a>
+      </nav>
+
+      <div class="header-right">
+        <nav class="lang-switch" aria-label="Language selection">
+          <a href="/method/" class="lang-active" aria-current="true" aria-label="English">🇬🇧 EN</a>
+          <a href="/es/method/" aria-label="Español">🇪🇸 ES</a>
+        </nav>
+        <span class="badge-beta" aria-label="Beta">Beta</span>
+        <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+    <a href="/">Home</a>
+    <a href="/glaucoma/">Glaucoma</a>
+    <a href="/method/" class="active" aria-current="page">Method</a>
+    <a href="/about/andrea-ragosta/">About</a>
+    <a href="/legal/">Legal</a>
+  </nav>
+
+  <main>
+
+    <!-- ── HERO ─────────────────────────────────────────────────────── -->
+    <section id="hero" aria-labelledby="method-heading">
+      <div class="container">
+
+        <p class="hero-breadcrumb">
+          <a href="/">OFTY</a> &rsaquo; Method
+        </p>
+
+        <p class="section-eyebrow">Conceptual Framework</p>
+
+        <h1 id="method-heading">OFTY <em>Method</em></h1>
+
+        <p class="hero-intro">
+          The OFTY framework provides structured interpretation of clinical data used in the
+          longitudinal monitoring of ophthalmic disease. Its purpose is not to generate decisions,
+          but to organise heterogeneous clinical information into coherent, domain-specific
+          interpretative outputs that support — rather than substitute — clinical reasoning.
+        </p>
+
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ── MAIN CONTENT ──────────────────────────────────────────────── -->
+    <section id="content" aria-label="OFTY Method">
+      <div class="container">
+        <div class="content-wrap">
+
+          <!-- Core Philosophy -->
+          <div class="method-section reveal">
+            <p class="section-label">Core Philosophy</p>
+            <p>
+              Chronic ophthalmic disease management requires the concurrent interpretation of
+              parameters that evolve at different rates, carry different degrees of measurement
+              uncertainty, and may follow discordant trajectories over time. Reliance on isolated
+              values or informal heuristics can introduce unnecessary variability into clinical
+              interpretation.
+            </p>
+            <p>
+              The central premise of the OFTY method is that clinical data becomes more interpretable
+              when it is contextualised systematically, with explicit acknowledgment of what each
+              parameter can and cannot indicate at a given point in time.
+            </p>
+          </div>
+
+          <hr class="section-sep" />
+
+          <!-- Methodological Principles -->
+          <div class="method-section reveal">
+            <p class="section-label">Methodological Principles</p>
+            <p>
+              The method is grounded in several interdependent principles. Clinical domains —
+              pressure-related, structural, and functional — are analysed independently rather than
+              collapsed into composite indices, preserving the interpretative value of domain-specific
+              signals, including discordant patterns. Interpretation is oriented toward longitudinal
+              trends rather than single observations, reflecting the chronic nature of the conditions
+              addressed.
+            </p>
+            <p>
+              All outputs are weighted by the reliability of the underlying data: measurement quality,
+              series length, and internal consistency directly influence interpretative confidence and
+              output classification. Where data are insufficient or ambiguous, the system generates
+              explicit statements of limited assessability rather than forced classifications.
+              Uncertainty is not suppressed; it is reported as a structural component of the
+              interpretative output.
+            </p>
+          </div>
+
+          <hr class="section-sep" />
+
+          <!-- Descriptive Positioning -->
+          <div class="method-section reveal">
+            <p class="section-label">Descriptive Positioning</p>
+            <p>
+              OFTY generates descriptive outputs. It does not prescribe management decisions or
+              replace clinical judgment. The clinician retains full interpretative authority. The role
+              of the framework is to structure the available evidence into a transparent analytical
+              summary that can be evaluated, challenged, and contextualised within the individual
+              patient's clinical history.
+            </p>
+          </div>
+
+          <hr class="section-sep" />
+
+          <!-- Modular Architecture -->
+          <div class="method-section reveal">
+            <p class="section-label">Modular Architecture</p>
+            <p>
+              The framework is organised as a set of independent analytical domains, each addressing
+              a distinct clinical dimension. Outputs from individual domains may be considered
+              collectively, but their analytical independence is preserved by design. This architecture
+              helps ensure that uncertainty in one domain does not automatically propagate into others,
+              and that each interpretative output remains traceable to its methodological basis.
+            </p>
+          </div>
+
+          <hr class="section-sep" />
+
+          <!-- Generalizability -->
+          <div class="method-section reveal">
+            <p class="section-label">Generalizability</p>
+            <p>
+              The underlying principles — domain separation, longitudinal analysis,
+              reliability-weighted interpretation, and explicit uncertainty — are not specific to any
+              single condition. The method is designed for extensibility across ophthalmic
+              subspecialties in which structured longitudinal monitoring is clinically relevant.
+            </p>
+          </div>
+
+          <!-- Closing block -->
+          <div class="closing-block reveal">
+            <p>
+              OFTY functions as a structured interpretative layer within the clinical reasoning
+              process: one that makes the assumptions of interpretation explicit, the limitations of
+              available data transparent, and the grounds for clinical judgment clearer.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <div class="container">
+      <p class="footer-copy">© 2026 OFTY · Andrea Ragosta, MD, FEBO</p>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/">Home</a>
+        <a href="/glaucoma/">Glaucoma</a>
+        <a href="/method/">Method</a>
+        <a href="/about/andrea-ragosta/">About</a>
+        <a href="/legal/">Legal</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    /* ── SCROLL REVEAL ──────────────────────────────────────────── */
+    (function () {
+      var els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('visible'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          setTimeout(function () { entry.target.classList.add('visible'); }, 0);
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.1 });
+      els.forEach(function (el) { io.observe(el); });
+    }());
+
+    /* ── HEADER SCROLL STATE ────────────────────────────────────── */
+    (function () {
+      var header = document.getElementById('header');
+      if (!header) return;
+      window.addEventListener('scroll', function () {
+        header.classList.toggle('scrolled', window.scrollY > 10);
+      }, { passive: true });
+    }());
+
+    /* ── WORDMARK CORNEA HOVER ──────────────────────────────────── */
+    (function () {
+      var logo = document.querySelector('.wordmark');
+      if (!logo) return;
+      logo.addEventListener('mouseenter', function () {
+        logo.classList.remove('vanishing-out');
+        logo.classList.add('drawing-in');
+      });
+      logo.addEventListener('mouseleave', function () {
+        logo.classList.remove('drawing-in');
+        logo.classList.add('vanishing-out');
+      });
+    }());
+
+    /* ── HAMBURGER MENU ─────────────────────────────────────────── */
+    (function () {
+      var btn  = document.getElementById('hamburger');
+      var menu = document.getElementById('mobile-menu');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', function () {
+        var open = menu.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+      document.addEventListener('click', function (e) {
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          menu.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }());
+  </script>
+
+</body>
+</html>
